@@ -47,6 +47,7 @@ class DashBoardScreen extends StatelessWidget {
             // FancyTabData(imagePath: Images.message_image, title: Strings.inbox),
             FancyTabData(
                 imagePath: Images.shopping_image, title: Strings.orders),
+
             FancyTabData(
                 imagePath: Images.cart_image /* Images.notification*/,
                 title: "Cart" /*Strings.notification*/),

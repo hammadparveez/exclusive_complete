@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -30,7 +31,7 @@ import 'package:sixvalley_ui_kit/view/screen/search/search_screen.dart';
 
 Future myTopLevelBg(Map<String, dynamic> message) async {
   print("This is my top level function $message");
-  return 0;
+  //return 0;
 }
 
 class FireBaseTest {
@@ -40,9 +41,26 @@ class FireBaseTest {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
+
   final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +68,16 @@ class HomePage extends StatelessWidget {
       Provider.of<CategoryProvider>(context, listen: false).initCategoryList();
       Provider.of<WordPressProductProvider>(context, listen: false)
           .initFeaturedProducts();
-      //await GetIt.instance.get<SharedPreferences>().clear();
-      //final firebase = FirebaseMessaging();
+      if (context.read<AuthProvider>().isInvalidAuth) {
+        //showCustomSnackBar("Dummy Snack", context);
+      }
+      final firebase = FirebaseMessaging();
 
-      /*  firebase.configure(
+      firebase.configure(
         onMessage: (Map<String, dynamic> message) {
+          firebase.subscribeToTopic("weather");
           print('onMessage called: $message');
+          Get.to(CartScreen());
         },
         onResume: (Map<String, dynamic> message) {
           print('onResume called: $message');
@@ -63,9 +85,10 @@ class HomePage extends StatelessWidget {
         onLaunch: (Map<String, dynamic> message) {
           print('onLaunch called: $message');
         },
-      );*/
-      //final value = await firebase.getToken();
-      //print("My Firebase Notification token ${value}");
+        onBackgroundMessage: myTopLevelBg,
+      );
+      final value = await firebase.getToken();
+      print("My Firebase Notification token ${value}");
     });
 
     return RefreshIndicator(

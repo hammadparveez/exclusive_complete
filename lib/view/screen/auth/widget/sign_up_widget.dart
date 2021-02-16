@@ -88,6 +88,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             await Provider.of<ProfileProvider>(context, listen: false)
                 .getAddressOfUser();
             Navigator.pop(context);
+            Provider.of<AuthProvider>(context, listen: false)
+                .updateSelectedIndex(0);
             Navigator.pushAndRemoveUntil(context,
                 MaterialPageRoute(builder: (_) {
               return DashBoardScreen();

@@ -61,7 +61,10 @@ dependencies:
   #firebase firebase core
   #firebase_core: ^0.5.0
   #Firebase push notification
-  firebase_messaging: ^7.0.1
+  firebase_core: ^0.7.0
+  #firebase_analytics: ^7.0.1
+  firebase_messaging: 6.0.9
+  #firebase_messaging: ^7.0.1
   #firestore
   #cloud_firestore: 0.15.0
   #Flutter_HTML
@@ -69,7 +72,7 @@ dependencies:
   #GetX
   get: ^3.24.0
   #cybersource payment gateway
-  cyberpayflutter: ^1.0.3
+  #cyberpayflutter: ^1.0.3
 
 
 dev_dependencies:
