@@ -51,7 +51,7 @@ class ProductWidget extends StatelessWidget {
                     children: [
                       // Product Image
                       Expanded(
-                        flex: 7,
+                        flex: 6,
                         child: Container(
                           //padding: EdgeInsets.all(Dimensions.PADDING_SIZE_LARGE),
                           decoration: BoxDecoration(

@@ -133,7 +133,7 @@ class CategoryView extends StatelessWidget {
                                         color: Colors.white,
                                         textAlign: TextAlign.center,
                                         fontSize:
-                                            FontSize(Get.textScaleFactor * 11),
+                                            FontSize(Get.textScaleFactor * 10),
                                       ),
                                     },
                                   ) /*Text(

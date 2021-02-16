@@ -168,7 +168,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
             Container(
               color: Color(0xff757575),
               child: Container(
-                padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
+                padding: EdgeInsets.only(top:Get.mediaQuery.padding.top+5, bottom: Dimensions.PADDING_SIZE_SMALL, right: Dimensions.PADDING_SIZE_SMALL, left:Dimensions.PADDING_SIZE_SMALL,),
                 decoration: BoxDecoration(
                   color: ColorResources.WHITE,
                   borderRadius: BorderRadius.only(

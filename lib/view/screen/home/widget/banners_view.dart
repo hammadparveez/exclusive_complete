@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sixvalley_ui_kit/provider/banner_provider.dart';
@@ -17,7 +18,7 @@ class BannersView extends StatelessWidget {
       builder: (context, bannerProvider, child) {
         return Container(
           width: double.infinity,
-          height: 150,
+          height: Get.height / 4.5,
           child: bannerProvider.bannerList != null
               ? bannerProvider.bannerList.length != 0
                   ? Stack(

@@ -83,11 +83,13 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             .register(registerModel)
             .then((isLoggedIn) async {
           if (isLoggedIn) {
+
             Provider.of<ProfileProvider>(context, listen: false)
                 .assignEmptyAddressList();
             await Provider.of<ProfileProvider>(context, listen: false)
                 .getAddressOfUser();
             Navigator.pop(context);
+            Provider.of<AuthProvider>(context, listen: false).updateSelectedIndex(0);
             Navigator.pushAndRemoveUntil(context,
                 MaterialPageRoute(builder: (_) {
               return DashBoardScreen();
