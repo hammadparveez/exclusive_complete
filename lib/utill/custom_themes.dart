@@ -1,0 +1,43 @@
+import 'package:flutter/material.dart';
+
+import 'color_resources.dart';
+import 'dimensions.dart';
+
+const titilliumRegular = TextStyle(
+  fontFamily: 'TitilliumWeb',
+  fontSize: Dimensions.FONT_SIZE_DEFAULT,
+  color: ColorResources.BLACK,
+);
+
+const titilliumSemiBold = TextStyle(
+  fontFamily: 'TitilliumWeb',
+  fontSize: Dimensions.FONT_SIZE_DEFAULT,
+  fontWeight: FontWeight.w600,
+  color: ColorResources.BLACK,
+);
+
+const titilliumBold = TextStyle(
+  fontFamily: 'TitilliumWeb',
+  fontSize: Dimensions.FONT_SIZE_DEFAULT,
+  fontWeight: FontWeight.w700,
+  color: ColorResources.BLACK,
+);
+const titilliumItalic = TextStyle(
+  fontFamily: 'TitilliumWeb',
+  fontSize: Dimensions.FONT_SIZE_DEFAULT,
+  fontStyle: FontStyle.italic,
+  color: ColorResources.BLACK,
+);
+
+const robotoRegular = TextStyle(
+  fontFamily: 'Roboto',
+  fontSize: Dimensions.FONT_SIZE_DEFAULT,
+  color: ColorResources.BLACK,
+);
+
+const robotoBold = TextStyle(
+  fontFamily: 'Roboto',
+  fontSize: Dimensions.FONT_SIZE_DEFAULT,
+  fontWeight: FontWeight.w700,
+  color: ColorResources.BLACK,
+);

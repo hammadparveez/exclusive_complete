@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "537352172637",
+    "project_id": "exclusive-inn-ed797",
+    "storage_bucket": "exclusive-inn-ed797.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537352172637:android:64e751c6c6acd0d6f949b4",
+        "android_client_info": {
+          "package_name": "com.u6amtech.sixvalley_ui_kit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "537352172637-uouk5h4ha7a5f1t6si1nj69ghfdpm8eu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.u6amtech.sixvalley_ui_kit",
+            "certificate_hash": "17bb60832088c0bc8a0be287605dd5287433b3fb"
+          }
+        },
+        {
+          "client_id": "537352172637-9ko8vneueu3avnsk9upci458f3q5gp2p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCffDakuqTPAZKGKUP6fOzo1U3xivMeljc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "537352172637-9ko8vneueu3avnsk9upci458f3q5gp2p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

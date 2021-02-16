@@ -1,0 +1,126 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sixvalley_ui_kit/provider/auth_provider.dart';
+import 'package:sixvalley_ui_kit/provider/profile_provider.dart';
+import 'package:sixvalley_ui_kit/utill/color_resources.dart';
+import 'package:sixvalley_ui_kit/utill/custom_themes.dart';
+import 'package:sixvalley_ui_kit/utill/dimensions.dart';
+import 'package:sixvalley_ui_kit/utill/images.dart';
+import 'package:sixvalley_ui_kit/utill/string_resources.dart';
+import 'package:sixvalley_ui_kit/view/screen/cart/cart_screen.dart';
+import 'package:sixvalley_ui_kit/view/screen/dashboard/widget/fancy_bottom_nav_bar.dart';
+import 'package:sixvalley_ui_kit/view/screen/home/home_screen.dart';
+import 'package:sixvalley_ui_kit/view/screen/more/more_screen.dart';
+import 'package:sixvalley_ui_kit/view/screen/order/order_screen.dart';
+import 'package:sixvalley_ui_kit/view/screen/profile/profile_screen.dart';
+
+class DashBoardScreen extends StatelessWidget {
+  final PageController _pageController = PageController();
+  final List<Widget> _screens = [
+    HomePage(),
+    //InboxScreen(isBackButtonExist: false),
+    OrderScreen(isBacButtonExist: false),
+    CartScreen(
+        isBackButtonExist:
+            false), //NotificationScreen(isBacButtonExist: false),
+    MoreScreen(),
+  ];
+  final GlobalKey<FancyBottomNavBarState> _bottomNavKey = GlobalKey();
+
+  @override
+  Widget build(BuildContext context) {
+    int _pageIndex = 0;
+    return WillPopScope(
+      onWillPop: () async {
+        if (_pageIndex != 0) {
+          _bottomNavKey.currentState.setPage(0);
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: Scaffold(
+        bottomNavigationBar: FancyBottomNavBar(
+          key: _bottomNavKey,
+          tabs: [
+            FancyTabData(imagePath: Images.home_image, title: Strings.home),
+            // FancyTabData(imagePath: Images.message_image, title: Strings.inbox),
+            FancyTabData(
+                imagePath: Images.shopping_image, title: Strings.orders),
+            FancyTabData(
+                imagePath: Images.cart_image /* Images.notification*/,
+                title: "Cart" /*Strings.notification*/),
+            FancyTabData(imagePath: Images.more_image, title: Strings.more),
+          ],
+          onTabChangedListener: (int index) {
+            _pageController.jumpToPage(index);
+            _pageIndex = index;
+          },
+        ),
+        body: PageView.builder(
+          controller: _pageController,
+          itemCount: _screens.length,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            return _screens[index];
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class ProfilerRow extends StatefulWidget {
+  @override
+  _ProfilerRowState createState() => _ProfilerRowState();
+}
+
+class _ProfilerRowState extends State<ProfilerRow> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer2<AuthProvider, ProfileProvider>(
+      builder: (_, authProvider, profile, child) => Row(children: [
+        InkWell(
+            onTap: () {
+              if (authProvider.isInvalidAuth) {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => ProfileScreen()));
+              }
+            },
+            child: authProvider.isUserLoggedIn
+                ? profile.userInfoModel == null
+                    ? CircleAvatar(child: Icon(Icons.person, size: 35))
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: Text(
+                              "${authProvider.getUserDisplayName().characters.first.toUpperCase()}"),
+                        ),
+                      )
+                : CircleAvatar(
+                    child: Icon(Icons.person, size: 35, color: Colors.black),
+                    backgroundColor: Colors.white,
+                  )),
+        SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+        Text(authProvider.getUserDisplayName().toUpperCase(),
+            /*authProvider.isUserLoggedIn
+                ? profile.userInfoModel != null
+                    ? '${profile.userInfoModel.fName} ${profile.userInfoModel.lName}'
+                    : 'Full Name'
+                : 'Guest',*/
+            style: titilliumRegular.copyWith(color: ColorResources.WHITE)),
+      ]),
+    );
+  }
+}
