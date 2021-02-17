@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import 'package:sixvalley_ui_kit/helper/product_type.dart';
 import 'package:sixvalley_ui_kit/provider/auth_provider.dart';
 import 'package:sixvalley_ui_kit/provider/cart_provider.dart';
 import 'package:sixvalley_ui_kit/provider/category_provider.dart';
+import 'package:sixvalley_ui_kit/provider/network_check_notifier.dart';
 import 'package:sixvalley_ui_kit/provider/profile_provider.dart';
 import 'package:sixvalley_ui_kit/provider/wordpress_product_provider.dart';
 import 'package:sixvalley_ui_kit/utill/color_resources.dart';
@@ -27,10 +29,11 @@ import 'package:sixvalley_ui_kit/view/screen/home/widget/products_view.dart';
 import 'package:sixvalley_ui_kit/view/screen/more/more_screen.dart';
 import 'package:sixvalley_ui_kit/view/screen/more/widget/app_info_dialog.dart';
 import 'package:sixvalley_ui_kit/view/screen/search/search_screen.dart';
-
+import 'package:sixvalley_ui_kit/view/basewidget/request_time_out_dialog.dart';
+import 'package:sixvalley_ui_kit/view/basewidget/no_internet_dialog.dart';
 Future myTopLevelBg(Map<String, dynamic> message) async {
   print("This is my top level function $message");
-  return 0;
+  //return 0;
 }
 
 class FireBaseTest {
@@ -40,22 +43,31 @@ class FireBaseTest {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
+
   final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
 
   @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      Provider.of<CategoryProvider>(context, listen: false).initCategoryList();
-      Provider.of<WordPressProductProvider>(context, listen: false)
-          .initFeaturedProducts();
-      //await GetIt.instance.get<SharedPreferences>().clear();
-      //final firebase = FirebaseMessaging();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
+        Provider.of<CategoryProvider>(context, listen: false).initCategoryList();
+        Provider.of<WordPressProductProvider>(context, listen: false)
+            .initFeaturedProducts();
 
-      /*  firebase.configure(
+      final firebase = FirebaseMessaging();
+
+      firebase.configure(
         onMessage: (Map<String, dynamic> message) {
+          firebase.subscribeToTopic("weather");
           print('onMessage called: $message');
+          Get.to(CartScreen());
         },
         onResume: (Map<String, dynamic> message) {
           print('onResume called: $message');
@@ -63,24 +75,66 @@ class HomePage extends StatelessWidget {
         onLaunch: (Map<String, dynamic> message) {
           print('onLaunch called: $message');
         },
-      );*/
-      //final value = await firebase.getToken();
-      //print("My Firebase Notification token ${value}");
+        onBackgroundMessage: myTopLevelBg,
+      );
+      final value = await firebase.getToken();
+      print("My Firebase Notification token ${value}");
+    /*  firebase.subscribeToTopic("order_done").then((value) => print("Order is done "), onError: () {print("An error occured ");});
+      firebase.subscribeToTopic("awesome_boy");*/
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (context.read<CategoryProvider>().isInternet) {
+        showDialog(context: context, child: NoInterNetDialog(singleBack: true), barrierDismissible: false);
+      }else if (context.read<CategoryProvider>().isTimedOut) {
+        showDialog(context: context, child: RequestTimedOutDialog(singleBack: true), barrierDismissible: false);
+      }
+
     });
 
     return RefreshIndicator(
       displacement: Get.height * .1,
       onRefresh: () async {
-        await Provider.of<CartProvider>(context, listen: false)
+        final categoryProvider =  Provider.of<CategoryProvider>(context, listen: false);
+        final wordPressProvider =  Provider.of<WordPressProductProvider>(context, listen: false);
+        final networkNotifier =  Provider.of<NetworkCheckNotifier>(context, listen: false);
+        await networkNotifier.checkInternet();
+        if(networkNotifier.isNoInternet) {
+          showDialog(context: context, child: NoInterNetDialog(singleBack: true), barrierDismissible: false);
+          Provider.of<CartProvider>(context, listen: false)
+              .initTotalCartCount();
+            categoryProvider.initCategoryList();
+            wordPressProvider.initFeaturedProducts();
+        }else if(networkNotifier.isTimedOut) {
+          showDialog(context: context, child: RequestTimedOutDialog(singleBack: true), barrierDismissible: false);
+          Provider.of<CartProvider>(context, listen: false)
+              .initTotalCartCount();
+          categoryProvider.initCategoryList();
+          wordPressProvider.initFeaturedProducts();
+        }else {Provider.of<CartProvider>(context, listen: false)
             .initTotalCartCount();
-        return false;
+          if(categoryProvider.categoryList.isEmpty)
+              categoryProvider.initCategoryList();
+          if(wordPressProvider.listOfFeaturedProducts.isEmpty)
+              wordPressProvider.initFeaturedProducts();
+        }
+        return true;
       },
       child: Scaffold(
         key: _drawerKey,
         backgroundColor: Colors.grey[50],
         //resizeToAvoidBottomPadding: false,
         drawer: _CustomDrawer(),
-        body: SafeArea(
+        body:
+        SafeArea(
           child: CustomScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             controller: _scrollController,

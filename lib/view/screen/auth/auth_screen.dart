@@ -73,7 +73,8 @@ class AuthScreen extends StatelessWidget {
                                     InkWell(
                                       onTap: () =>
                                           _pageController.animateToPage(0,
-                                              duration: Duration(seconds: 1),
+                                              duration:
+                                                  Duration(milliseconds: 700),
                                               curve: Curves.easeInOut),
                                       child: Column(
                                         children: [

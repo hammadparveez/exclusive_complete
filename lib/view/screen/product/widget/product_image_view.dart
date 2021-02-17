@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sixvalley_ui_kit/data/model/response/product_model.dart';
@@ -57,16 +58,14 @@ class ProductImageView extends StatelessWidget {
                   itemCount: wordPressProductModel.images.length,
                   itemBuilder: (context, index) {
                     _index = index;
-                    print(
-                        "Image Source is ${wordPressProductModel.images} and ${wordPressProductModel.images[index].src}");
                     return Padding(
                       padding: EdgeInsets.fromLTRB(20, 20, 20, 50),
                       child: Hero(
                         tag: "image-view", //'image-${productModel.id}',
                         child: LayoutBuilder(
                           builder: (_, constraints) => CachedNetworkImage(
-                            height: MediaQuery.of(context).size.width,
-                            width: MediaQuery.of(context).size.width,
+                            height: Get.height,
+                            width: Get.width,
                             fadeOutDuration: Duration.zero,
                             fadeInDuration: Duration.zero,
                             placeholderFadeInDuration: Duration.zero,
@@ -88,7 +87,7 @@ class ProductImageView extends StatelessWidget {
                                   "assets/product_images/not-available.jpg",
                                   fit: BoxFit.fill);
                             },
-                            imageUrl: wordPressProductModel.images[index].src,
+                            imageUrl: wordPressProductModel != null ?  wordPressProductModel.images[index].src : "",
                             // "${wordPressProductModel.images != null ? wordPressProductModel.images[index].thumbnail : 'https://www.exclusiveinn.com/wp-content/uploads/2018/04/SACL09-1-600x853.jpg'}}", //productModel.images[index],
                           ),
                         ),
@@ -101,6 +100,7 @@ class ProductImageView extends StatelessWidget {
                   },
                 ),
               ),
+              wordPressProductModel != null ?
               wordPressProductModel.images.length > 0
                   ? Positioned(
                       left: 0,
@@ -114,7 +114,7 @@ class ProductImageView extends StatelessWidget {
                         ),
                       ),
                     )
-                  : const SizedBox.shrink(),
+                  : const SizedBox.shrink(): const SizedBox.shrink(),
               /*     Positioned(
                 bottom: 20,
                 right: 20,
@@ -145,6 +145,15 @@ class ProductImageView extends StatelessWidget {
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     return GestureDetector(
+                      onDoubleTap: () {
+                        _controller.animateToPage(index,
+                            duration: Duration(microseconds: 300),
+                            curve: Curves.easeInOut);
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                          return ProductImageScreen(
+                              imgModel: wordPressProductModel.images[_index]);
+                        }));
+                      },
                       onTap: () {
                         _controller.animateToPage(index,
                             duration: Duration(microseconds: 300),

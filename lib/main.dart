@@ -27,6 +27,7 @@ import 'package:sixvalley_ui_kit/provider/wishlist_provider.dart';
 import 'package:sixvalley_ui_kit/provider/wordpress_product_provider.dart';
 import 'package:sixvalley_ui_kit/utill/color_resources.dart';
 import 'package:sixvalley_ui_kit/view/screen/splash/splash_screen.dart';
+import 'package:sixvalley_ui_kit/provider/network_check_notifier.dart';
 
 import 'di_container.dart' as di;
 import 'provider/banner_provider.dart';
@@ -71,6 +72,7 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (context) => di.sl<WishListProvider>()),
       ChangeNotifierProvider(create: (context) => di.sl<SplashProvider>()),
       ChangeNotifierProvider(create: (context) => di.sl<CartProvider>()),
+      ChangeNotifierProvider(create: (context) => di.sl<NetworkCheckNotifier>()),
       ChangeNotifierProvider(
           create: (context) => di.sl<SupportTicketProvider>()),
       ChangeNotifierProvider(create: (context) => di.sl<TrackingProvider>()),

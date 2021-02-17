@@ -13,7 +13,6 @@ class WordPressProductProvider extends ChangeNotifier {
   bool _firstLoading = true;
   bool _isRequestTimedOut = false;
   bool _isNoInternet = false;
-
   bool get isNoInternet => _isNoInternet;
 
   set isNoInternet(bool value) {
@@ -72,14 +71,10 @@ class WordPressProductProvider extends ChangeNotifier {
 
   WordPressProductModel get wordPressProductModel => _wordPressProductModel;
 
-  void initFeaturedProducts() async {
+  Future<void> initFeaturedProducts() async {
+
     listOfFeaturedProducts = await fetchFeaturedProducts();
     _firstLoading = false;
-    print(
-        "---------List Of All feature products ----------------- ${listOfFeaturedProducts.length}");
-    //final products = [];
-    /*await getInstance.get<Future<List<WordPressProductModel>>>();*/
-    //listOfWpProducts = products.where((element) => element.featured == true).take(10).toList();
     notifyListeners();
   }
 
@@ -106,43 +101,7 @@ class WordPressProductProvider extends ChangeNotifier {
     listOfRelatedProducts = listOfZ;
     notifyListeners();
   }
-  /*  final products =
-        await getInstance.get<Future<List<WordPressProductModel>>>();
-    listOfRelatedProducts = [];
-    if (listRelatedItems.isNotEmpty)
-      products.forEach((item) {
-        for (int i = 0;
-            i < listRelatedItems.length && i < item.related_ids.length;
-            i++) {
-          if (item.related_ids.isNotEmpty) if (item.related_ids[i] ==
-              listRelatedItems[i]) {
-            print("${item.related_ids[i] == listRelatedItems[i]} All Items");
-            listOfRelatedProducts.add(item);
-          }
-        }*/
 
-  /* final relatedProducts =
-        products.where((element) => element.type == type).toList();
-    print("Related Product Type: ${products.first}");
-    print("This is party Name ${type}");
-    relatedProducts.forEach((relatedProduct) {
-      String image = "";
-      String category = "";
-      for (WooProductImage img in relatedProduct.images) image = img.src;
-      for (WooProductCategory cat in relatedProduct.categories)*/
-  //     category = cat.name;
-  /*   listOfRelatedProducts.add(WordPressProductModel(
-        id: relatedProduct.id,
-        price: double.parse(relatedProduct.price),
-        imgSrc: image,
-        short_desc: relatedProduct.shortDescription,
-        featured: relatedProduct.featured,
-        title: relatedProduct.name,
-        rating: relatedProduct.ratingCount.toDouble(),
-        categoryType: category,
-      ));
-    })
-  */
 
   Future<void> initTotalCategoryCounts(String slug) async {
     final int totalCounts =
@@ -199,7 +158,7 @@ class WordPressProductProvider extends ChangeNotifier {
     final product =
         await wordPressProductRepo.iniDetailPage(productID).catchError((e) {
       _isNoInternet = true;
-    }).timeout(Duration(seconds: 20), onTimeout: () {
+    }).timeout(AppConstants.TIMED_OUT_20, onTimeout: () {
       _isRequestTimedOut = true;
     });
     if (!(product is bool)) wordPressProductModelByID = product;
@@ -210,9 +169,15 @@ class WordPressProductProvider extends ChangeNotifier {
 
   Future<List<WordPressProductModel>> fetchFeaturedProducts(
       {int limit = 0}) async {
+
+    _isNoInternet = false;
+    _isRequestTimedOut = false;
     List<WordPressProductModel> listOfWPFeatureProducts = [];
     //final perf =  .getInstance();
-    final featureProducts = await wordPressProductRepo.featuredProducts();
+    final featureProducts = await wordPressProductRepo.featuredProducts().catchError((error) {
+      _isNoInternet = true;
+      return [];
+    }).timeout(AppConstants.TIMED_OUT_20, onTimeout: () async { _isRequestTimedOut= true; return [];});
 
     final f = featureProducts;
     f.forEach((element) {

@@ -20,10 +20,14 @@ class ConfirmationScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     flex: 2,
-                    child: Image.asset('assets/images/onboarding_image_three.png'),
+                    child:
+                        Image.asset('assets/images/onboarding_image_three.png'),
                   ),
-                  Text(Strings.CONFIRM_YOUR_MAIL, style: titilliumBold.copyWith(fontSize: 30, color: ColorResources.BLACK)),
-                  Text(description, textAlign: TextAlign.center, style: titilliumRegular),
+                  Text(Strings.CONFIRM_YOUR_MAIL,
+                      style: titilliumBold.copyWith(
+                          fontSize: 30, color: ColorResources.BLACK)),
+                  Text(description,
+                      textAlign: TextAlign.center, style: titilliumRegular),
                 ],
               ),
             ),
@@ -37,18 +41,24 @@ class ConfirmationScreen extends StatelessWidget {
                   margin: EdgeInsets.only(left: 70, right: 70),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(6),
-                      gradient: LinearGradient(colors: [ColorResources.COLOR_PRIMARY, ColorResources.COLOR_BLUE, ColorResources.COLOR_BLUE])),
+                      gradient: LinearGradient(colors: [
+                        ColorResources.COLOR_PRIMARY,
+                        ColorResources.COLOR_BLUE,
+                        ColorResources.COLOR_BLUE
+                      ])),
                   child: FlatButton(
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => DashBoardScreen()));
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => DashBoardScreen()));
                     },
                     child: Container(
                       width: double.infinity,
                       alignment: Alignment.center,
-                      child: Text(Strings.START, style: titilliumSemiBold.copyWith(
-                        color: ColorResources.WHITE,
-                        fontSize: Dimensions.FONT_SIZE_LARGE,
-                      )),
+                      child: Text(Strings.START,
+                          style: titilliumSemiBold.copyWith(
+                            color: ColorResources.WHITE,
+                            fontSize: Dimensions.FONT_SIZE_LARGE,
+                          )),
                     ),
                   ),
                 ),

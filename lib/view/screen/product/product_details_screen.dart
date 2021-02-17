@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sixvalley_ui_kit/data/model/response/product_model.dart';
 import 'package:sixvalley_ui_kit/data/model/response/wordpress_product_model.dart';
 import 'package:sixvalley_ui_kit/data/model/response/wp_product_model.dart';
@@ -10,7 +12,9 @@ import 'package:sixvalley_ui_kit/utill/color_resources.dart';
 import 'package:sixvalley_ui_kit/utill/custom_themes.dart';
 import 'package:sixvalley_ui_kit/utill/dimensions.dart';
 import 'package:sixvalley_ui_kit/utill/string_resources.dart';
+import 'package:sixvalley_ui_kit/view/basewidget/no_internet_dialog.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/no_internet_screen.dart';
+import 'package:sixvalley_ui_kit/view/basewidget/request_time_out_dialog.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/title_row.dart';
 import 'package:sixvalley_ui_kit/view/screen/product/widget/bottom_cart_view.dart';
 import 'package:sixvalley_ui_kit/view/screen/product/widget/product_image_view.dart';
@@ -37,36 +41,16 @@ class _ProductDetailsState extends State<ProductDetails> {
   WordPressProductModel model;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    model = widget.wordPressProductModel;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
+      final wordPressProvider = Provider.of<WordPressProductProvider>(context, listen: false);
       print("Init state of Product ${widget.productID}");
-      /* Provider.of<WishListProvider>(context, listen: false)
-          .checkWishList(widget.wordPressProductModel.id.toString()); */
-      Provider.of<WordPressProductProvider>(context, listen: false)
-          .resetProduct();
-      Provider.of<WordPressProductProvider>(context, listen: false)
-          .initDetailProduct(productID: widget.productID);
-      /* Provider.of<ProductDetailsProvider>(context, listen: false)
-          .resetQuantity();*/
+      wordPressProvider.resetProduct();
+      wordPressProvider.initDetailProduct(productID: widget.productID);
       Provider.of<CartProvider>(context, listen: false).initTotalCartCount();
 
-      print("Notifies the listener to reset");
-      /*model = Provider.of<WordPressProductProvider>(context, listen: false)
-          .wordPressProductModelByID;*/
-      /*   Provider.of<ProductDetailsProvider>(context, listen: false)
-          .removePrevReview();
-      Provider.of<ProductDetailsProvider>(context, listen: false)
-          .initProduct(product);
-
-      Provider.of<ProductProvider>(context, listen: false)
-          .removePrevRelatedProduct();
-      Provider.of<ProductProvider>(context, listen: false)
-          .initRelatedProductList();
-      Provider.of<ProductDetailsProvider>(context, listen: false)
-          .getCount(product.id.toString());
-      Provider.of<ProductDetailsProvider>(context, listen: false)
-          .getSharableLink(product.id.toString());*/
     });
   }
 
@@ -75,9 +59,16 @@ class _ProductDetailsState extends State<ProductDetails> {
     return Consumer3<ProductDetailsProvider, WordPressProductProvider,
         CartProvider>(
       builder: (context, details, wordPressProvider, cartProvider, child) {
-        return !wordPressProvider.isNoInternet
-            ? wordPressProvider.wordPressProductModelByID != null
-                ? Scaffold(
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          if(wordPressProvider.isNoInternet) {
+            showDialog(context: context, barrierDismissible: false, child: NoInterNetDialog());
+          }else if(wordPressProvider.isRequestTimedOut) {
+            showDialog(context: context, barrierDismissible: false, child: RequestTimedOutDialog());
+          }
+        });
+        return
+            //wordPressProvider.wordPressProductModelByID != null
+                Scaffold(
                     appBar: AppBar(
                       title: Row(children: [
                         IconButton(
@@ -98,24 +89,34 @@ class _ProductDetailsState extends State<ProductDetails> {
                     bottomNavigationBar: BottomCartView(
                         //product: widget.product,
                         wordPressProductModel:
-                            wordPressProvider.wordPressProductModelByID),
+                            model),
                     body: SingleChildScrollView(
                       physics: BouncingScrollPhysics(),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          wordPressProvider.wordPressProductModelByID.images !=
+                          wordPressProvider.wordPressProductModelByID !=
                                   null
                               ? ProductImageView(
                                   wordPressProductModel: wordPressProvider
                                       .wordPressProductModelByID)
-                              : Center(
-                                  child: const CircularProgressIndicator()),
+                              : Shimmer.fromColors(
+                    baseColor: Colors.grey[300],
+                        highlightColor: Colors.grey[100],
+                        enabled: true,
+                        child: Container(
+                          height: Get.height/3.5,
+                          width:  Get.width /1.5,
+                          decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: ColorResources.WHITE),
+                        )),
+
 
                           ProductTitleView(
                               productModel: widget.product,
-                              wordPressProductModel:
-                                  wordPressProvider.wordPressProductModelByID),
+                              wordPressProductModel: model,
+                                  /*wordPressProvider.wordPressProductModelByID*/),
 
                           // Coupon
                           /*Container(
@@ -138,8 +139,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 horizontal: 20, vertical: 10),
                             color: ColorResources.WHITE,
                             child: ProductSpecification(
-                              productSpecification:
-                                  "${wordPressProvider.wordPressProductModelByID.shortDescription}",
+                              productSpecification:model.shortDescription,
+                                  //"${wordPressProvider.wordPressProductModelByID.shortDescription}",
                             ), //productSpecification: product.details ?? ''),
                           ),
 
@@ -157,8 +158,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     isDetailsPage: true),
                                 SizedBox(height: 5),
                                 RelatedProductView(
-                                    relatedItems: wordPressProvider
-                                        .wordPressProductModelByID.related_ids,
+                                    relatedItems: model.related_ids,
+                                    //wordPressProvider.wordPressProductModelByID.related_ids,
                                     productType: "Dummy"),
                               ],
                             ),
@@ -166,15 +167,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                         ],
                       ),
                     ),
-                  )
-                : Scaffold(
+                  );
+                /*: Scaffold(
                     body: Center(
                     child: CircularProgressIndicator(),
-                  ))
-            : Scaffold(
-                body: Center(
-                child: NoInternetOrDataScreen(isNoInternet: true),
-              ));
+                  ));*/
       },
     );
   }

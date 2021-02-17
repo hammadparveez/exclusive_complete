@@ -1,6 +1,14 @@
 import 'dart:io';
 
 class AppConstants {
+  //check uri network
+
+  static const NETWORK_URI = "https://www.google.com/";
+  //Hero widget tag
+  static const TAG_NET_DIALOG = "internet_dialog";
+  //Durations
+  static const TIMED_OUT_20 = Duration(seconds: 20);
+
   static const String NO_PRODUCTS_FOUND =
       "No products were found matching your selection";
   static const String BASE_URL = 'http://dev.6amtech.com/api/';
@@ -171,6 +179,7 @@ class AppConstants {
   static const WP_ORDER_URI =
       "https://www.exclusiveinn.com/wp-json/wc/v3/orders?customer=";
   static const WP_ORDER_PAGE = "&page=";
+
   static const Map<String, String> WP_AUTH_HEADER = {
     HttpHeaders.authorizationHeader:
         //"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvd3d3LmV4Y2x1c2l2ZWlubi5jb20iLCJpYXQiOjE2MTIyNTI2NzMsIm5iZiI6MTYxMjI1MjY3MywiZXhwIjoxNjEyODU3NDczLCJkYXRhIjp7InVzZXIiOnsiaWQiOiIxIn19fQ.lVPW24IkvDNLIEiWpMN7X6EUOKcFmd-q86HTnFOUBfU",

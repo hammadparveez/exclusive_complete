@@ -1,4 +1,6 @@
 class Strings {
+  static const String NO_INTERNET = "Oops! No Internet Connection";
+  static const String TIMED_OUT = "Oops! Something Went Wrong";
   static const String SIX = 'six';
   static const String VALLEY = 'valley';
   static const String SEARCH = 'Search';

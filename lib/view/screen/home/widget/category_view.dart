@@ -19,9 +19,6 @@ class CategoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> _categories = [];
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<CategoryProvider>(context, listen: false).initCategoryList();
-    });
     return Consumer<CategoryProvider>(
       builder: (context, categoryProvider, child) {
         return categoryProvider.categoryList.length != 0
@@ -86,24 +83,33 @@ class CategoryView extends StatelessWidget {
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(10),
                                       topRight: Radius.circular(10)),
-                                  child: CachedNetworkImage(
-                                    imageUrl: categoryProvider
-                                                    .categoryList[index].icon !=
-                                                null &&
-                                            categoryProvider.categoryList[index]
-                                                .icon.isNotEmpty
-                                        ? categoryProvider
-                                            .categoryList[index].icon
-                                        : AppConstants.NO_IMAGE_URI,
-                                    fadeOutDuration: Duration.zero,
-                                    fadeInCurve: Curves.linear,
-                                    filterQuality: FilterQuality.low,
-                                    fit: BoxFit.cover,
-                                    errorWidget: (_, str, value) {
-                                      return Image.asset(
-                                          "assets/product_images/not-available.jpg",
-                                          fit: BoxFit.fill);
-                                    },
+                                  child: LayoutBuilder(
+                                    builder:(_, constraints) => CachedNetworkImage(
+                                      imageUrl: categoryProvider
+                                                      .categoryList[index].icon !=
+                                                  null &&
+                                              categoryProvider.categoryList[index]
+                                                  .icon.isNotEmpty
+                                          ? categoryProvider
+                                              .categoryList[index].icon
+                                          : AppConstants.NO_IMAGE_URI,
+                                      fadeOutDuration: Duration.zero,
+                                      fadeInCurve: Curves.linear,
+                                      filterQuality: FilterQuality.low,
+                                      fit: BoxFit.cover,
+                                      placeholder: (_,s) {
+                                        return Shimmer.fromColors(
+                                          baseColor: Colors.black38,
+                                          highlightColor: Colors.black12,
+                                          child: Container(width: constraints.maxWidth, height: constraints.maxHeight,),
+                                        );
+                                      },
+                                      errorWidget: (_, str, value) {
+                                        return Image.asset(
+                                            "assets/product_images/not-available.jpg",
+                                            fit: BoxFit.fill);
+                                      },
+                                    ),
                                   ),
 
                                   /*Image.network(

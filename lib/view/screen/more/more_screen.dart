@@ -259,6 +259,7 @@ class MoreScreen extends StatelessWidget {
                               .clearTotalItemsInCart();
                         });
                       } else {
+
                         Navigator.push(context,
                             MaterialPageRoute(builder: (_) => AuthScreen()));
                       }

@@ -30,6 +30,7 @@ import 'package:sixvalley_ui_kit/provider/support_ticket_provider.dart';
 import 'package:sixvalley_ui_kit/provider/tracking_provider.dart';
 import 'package:sixvalley_ui_kit/provider/wishlist_provider.dart';
 import 'package:sixvalley_ui_kit/provider/wordpress_product_provider.dart';
+import 'package:sixvalley_ui_kit/provider/network_check_notifier.dart';
 
 import 'data/repository/auth_repo.dart';
 import 'data/repository/banner_repo.dart';
@@ -51,6 +52,7 @@ import 'data/repository/splash_repo.dart';
 import 'data/repository/support_ticket_repo.dart';
 import 'data/repository/tracking_repo.dart';
 import 'data/repository/wishlist_repo.dart';
+import 'package:sixvalley_ui_kit/data/repository/network_notifier_repo.dart';
 
 final sl = GetIt.instance;
 
@@ -80,8 +82,10 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SupportTicketRepo());
   sl.registerLazySingleton(() => TrackingRepo());
   sl.registerLazySingleton(() => BillingAddressRepo());
+  sl.registerLazySingleton(() => NetworkCheckRepo());
   sl.registerLazySingleton(() => WordPressProductRepo(sl()));
   sl.registerLazySingleton(() => PaymentTypeProvider());
+  sl.registerLazySingleton(() => NetworkCheckNotifier(sl()));
 
   // Provider
 
