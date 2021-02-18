@@ -175,7 +175,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
         body: Stack(
           children: [
-            Transform.translate(offset: _animation.value, child: _CustomDrawer()),
+            Transform(transform: Matrix4.translationValues(Get.width/2, Get.height/2, 30), child: _CustomDrawer()),
             Transform.translate(
               offset: -_animation.value,
               child: SafeArea(
