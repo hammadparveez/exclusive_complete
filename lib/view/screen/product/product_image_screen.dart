@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:sixvalley_ui_kit/data/model/response/wordpress_product_model.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/custom_app_bar.dart';
@@ -56,9 +57,11 @@ class _ProductImageScreenState extends State<ProductImageScreen> {
                 child: InteractiveViewer(
                   scaleEnabled: true,
                   minScale: 0.3,maxScale: 4,
-
                   child: CachedNetworkImage(
                     imageUrl: widget.imgModel.src,
+                    placeholder: (_,str) {
+                      return SpinKitFadingCircle(color: Colors.transparent);
+                    },
                   ),
                 ),
               ),

@@ -1,4 +1,5 @@
 class Images {
+  static const String no_image_available = "assets/product_images/not-available.jpg";
   static const String more_filled_image = 'assets/images/more_filled.png';
   static const String cart_arrow_down_image =
       'assets/images/cart_arrow_down.png';

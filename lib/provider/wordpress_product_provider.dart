@@ -84,21 +84,9 @@ class WordPressProductProvider extends ChangeNotifier {
   }
 
   initRelatedProduct({List<dynamic> listRelatedItems}) async {
-    print("List Of Related ITems $listRelatedItems");
-    print("List of related products $listRelatedItems");
-    final List<WordPressProductModel> listOfZ = [];
-    for (int i = 0; i < listRelatedItems.length; i++) {
-      final url = "${AppConstants.PRODUCTS_BY_ID_URI}${listRelatedItems[i]}";
-      print("URL OF Related PRoduct: ${url}");
-      final product = await DecodeToJson.decodeFromJsonOrUrl(
-          callback: get,
-          url: url,
-          key: "${AppConstants.PRODUCTS_BY_ID_KEY}${listRelatedItems[i]}");
 
-      if (product["product"]["in_stock"])
-        listOfZ.add(WordPressProductModel.fromJson(product["product"]));
-    }
-    listOfRelatedProducts = listOfZ;
+    listOfRelatedProducts =  await wordPressProductRepo.getRelatedProducts(listRelatedItems);
+
     notifyListeners();
   }
 
@@ -161,7 +149,9 @@ class WordPressProductProvider extends ChangeNotifier {
     }).timeout(AppConstants.TIMED_OUT_20, onTimeout: () {
       _isRequestTimedOut = true;
     });
-    if (!(product is bool)) wordPressProductModelByID = product;
+    if (!(product is bool))  {
+      wordPressProductModelByID = product;
+    }
     notifyListeners();
   }
 

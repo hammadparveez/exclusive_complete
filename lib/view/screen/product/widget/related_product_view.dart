@@ -26,8 +26,8 @@ class _RelatedProductViewState extends State<RelatedProductView> {
           .initLatestProductList();*/
       Provider.of<WordPressProductProvider>(context, listen: false)
           .resetRelatedProducts();
-      Provider.of<WordPressProductProvider>(context, listen: false)
-          .initRelatedProduct(listRelatedItems: widget.relatedItems);
+     /* Provider.of<WordPressProductProvider>(context, listen: false)
+          .initRelatedProduct(listRelatedItems: widget.relatedItems);*/
     });
   }
 
@@ -36,13 +36,8 @@ class _RelatedProductViewState extends State<RelatedProductView> {
     return Consumer<WordPressProductProvider>(
       builder: (_, wordPressProvider, child) => Consumer<ProductProvider>(
         builder: (context, prodProvider, child) {
-          /*return Container(
-            child: Center(
-              child: Text("${wordPressProvider.listOfRelatedProducts.length}"),
-            ),
-          );*/
+
           return Column(children: [
-            /*prodProvider.relatedProductList != null ? prodProvider.relatedProductList.length != 0 ? */
 
             wordPressProvider.listOfRelatedProducts != null
                 ? wordPressProvider.listOfRelatedProducts.length != 0
@@ -57,6 +52,7 @@ class _RelatedProductViewState extends State<RelatedProductView> {
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (BuildContext context, int index) {
                           return ProductWidget(
+                            isRelatedProducts : true,
                             wordPressProductModel:
                                 wordPressProvider.listOfRelatedProducts[index],
                             /* productModel:
@@ -71,8 +67,9 @@ class _RelatedProductViewState extends State<RelatedProductView> {
                             child: CircularProgressIndicator()))
                 : Center(
                     child: Padding(
+                      padding: EdgeInsets.all(10),
                         child:
-                            CircularProgressIndicator())) /*ProductShimmer(
+                            Text("Nothing found"))) /*ProductShimmer(
                     isEnabled: Provider.of<ProductProvider>(context)
                             .relatedProductList ==
                         null),*/

@@ -8,6 +8,7 @@ class ColorResources {
   static const Color PRIMARY_COLOR = Color(0xff1c1c1c);
   static const Color PRIMARY_COLOR_LIGHT = Color(0xff575757);
   static const Color PRIMARY_COLOR_BIT_DARK = Color(0xff3d3d3d);
+  static const Color WEB_PRIMARY_COLOR = Color(0xffea7458);
   static const Color COLOR_PRIMARY = Color(0xff1c1c1c);
   static const Color COLOR_BLUE = Color(0xff00ADE3);
   static const Color COLUMBIA_BLUE = Color(0xff92C6FF);

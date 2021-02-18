@@ -144,7 +144,6 @@ class WordPressProductModel {
     }
     if (json["variations"] != null && json["variations"].isNotEmpty) {
       json["variations"].forEach((variation) {
-        print("XXXXXXXXX ${variation}");
         if (variation is Map<String, dynamic>)
           variations.add(WordPressProductVariations.fromJson(variation));
         else {
@@ -198,7 +197,7 @@ class PriceModel {
 class ImagesModel {
   int id;
   String src, thumbnail, srcSet, sizes, name, alt;
-
+  String shop_catalog , woocommerce_gallery_thumbnail;
   ImagesModel({
     this.id,
     this.src,
@@ -207,6 +206,8 @@ class ImagesModel {
     this.sizes,
     this.name,
     this.alt,
+    this.woocommerce_gallery_thumbnail,
+    this.shop_catalog,
   });
   ImagesModel.fromJson(Map<String, dynamic> json) {
     id = json["id"];
@@ -215,6 +216,8 @@ class ImagesModel {
     else {
       src = "https://maheybook.com/images/no-image.jpg";
     }
+    shop_catalog = json.containsKey("shop_catalog") ? json["shop_catalog"] : "";
+    woocommerce_gallery_thumbnail = json.containsKey("woocommerce_gallery_thumbnail") ? json["woocommerce_gallery_thumbnail"] : "";
     name = json["name"];
     //srcSet = json["srcset"];
     alt = json["alt"];

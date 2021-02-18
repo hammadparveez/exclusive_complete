@@ -29,7 +29,7 @@ class DecodeToJson {
         if (response.statusCode == 200 || response.statusCode == 201) {
           final body = response.body;
           //await perfs.setString(key, body);
-          data = await jsonDecode(body);
+          data =  jsonDecode(body);
         }
       } else
         print("URL is empty");

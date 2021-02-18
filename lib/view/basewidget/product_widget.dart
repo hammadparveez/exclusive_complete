@@ -11,9 +11,10 @@ import 'package:sixvalley_ui_kit/utill/dimensions.dart';
 import 'package:sixvalley_ui_kit/view/screen/product/product_details_screen.dart';
 
 class ProductWidget extends StatelessWidget {
+  final bool isRelatedProducts;
   final WordPressProductModel wordPressProductModel;
   final Product productModel;
-  ProductWidget({@required this.productModel, this.wordPressProductModel});
+  ProductWidget({@required this.productModel, this.wordPressProductModel, this.isRelatedProducts= false});
 
   @override
   Widget build(BuildContext context) {
@@ -60,31 +61,37 @@ class ProductWidget extends StatelessWidget {
                                 topLeft: Radius.circular(10),
                                 topRight: Radius.circular(10)),
                           ),
-                          child: CachedNetworkImage(
-                            placeholder: (_, str) {
-                              return Shimmer.fromColors(
-                                child: SizedBox.expand(),
-                                enabled: true,
-                                baseColor: Colors.grey[300],
-                                highlightColor: Colors.grey[100],
-                              );
-                            },
-                            imageUrl: wordPressProductModel
-                                    .thumbnail_img.isNotEmpty
-                                ? "${wordPressProductModel.thumbnail_img.first}"
-                                : AppConstants.NO_IMAGE_URI,
-                            errorWidget: (_, str, value) {
-                              return Image.asset(
-                                "assets/product_images/not-available.jpg",
-                                fit: BoxFit.cover,
-                              );
-                            },
-                            fadeInCurve: Curves.bounceInOut,
-                            fadeInDuration: Duration.zero,
-                            fadeOutDuration: Duration.zero,
-
-                            //"https://images.pexels.com/photos/1591447/pexels-photo-1591447.jpeg",
-                            //fit: BoxFit.cover,
+                          child: Hero(
+                            tag: "${AppConstants.TAG_THUMBNAIL_IMG}${wordPressProductModel.id}",
+                            child: CachedNetworkImage(
+                              placeholder: (_, str) {
+                                return Shimmer.fromColors(
+                                  child: SizedBox.expand(),
+                                  enabled: true,
+                                  baseColor: Colors.grey[300],
+                                  highlightColor: Colors.grey[100],
+                                );
+                              },
+                              imageUrl: !isRelatedProducts ? wordPressProductModel
+                                      .thumbnail_img.isNotEmpty
+                                  ? "${wordPressProductModel.thumbnail_img.first}"
+                                  : AppConstants.NO_IMAGE_URI
+                              :wordPressProductModel.images.first.shop_catalog != null
+                              ? wordPressProductModel.images.first.shop_catalog
+                                  : wordPressProductModel.images.first.src,
+                              errorWidget: (_, str, value) {
+                                return Image.asset(
+                                  "assets/product_images/not-available.jpg",
+                                  fit: BoxFit.fill,
+                                );
+                              },
+                              fadeInCurve: Curves.bounceInOut,
+                              fadeInDuration: Duration.zero,
+                              fadeOutDuration: Duration.zero,
+    fit: BoxFit.fitHeight,
+                              //"https://images.pexels.com/photos/1591447/pexels-photo-1591447.jpeg",
+                              //fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),

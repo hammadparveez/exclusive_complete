@@ -6,8 +6,9 @@ class AppConstants {
   static const NETWORK_URI = "https://www.google.com/";
   //Hero widget tag
   static const TAG_NET_DIALOG = "internet_dialog";
+  static const TAG_THUMBNAIL_IMG = "thumbnail_image_load";
   //Durations
-  static const TIMED_OUT_20 = Duration(seconds: 20);
+  static const TIMED_OUT_20 = Duration(seconds: 20 + 10);
 
   static const String NO_PRODUCTS_FOUND =
       "No products were found matching your selection";
@@ -92,9 +93,12 @@ class AppConstants {
   //"https://www.exclusiveinn.com/wp-json/wc/v1/products/?search=";
   // "https://www.exclusiveinn.com/wc-api/v3/products/?search=";
   static const SEARCH_PER_PAGE = "page=";
+  static const RELATED_PRODUCTS_BY_ID_URI =
+      "https://www.exclusiveinn.com/wp-json/wc/v3/products?include=";
   //pages counts
   static const PRODUCTS_BY_ID_URI =
-      "https://www.exclusiveinn.com/wc-api/v3/products/";
+  "https://www.exclusiveinn.com/wp-json/wc/v3/products/";
+      //"https://www.exclusiveinn.com/wc-api/v3/products/";
   // "https://www.exclusiveinn.com/wp-json/wc/store/products/";
   static const CATEGORY_COUNT_URI =
       "https://www.exclusiveinn.com/wc-api/v3/products/count?filter[category]=";
@@ -130,6 +134,7 @@ class AppConstants {
   //WOO Commerce API Constant
   static const CUSTOMER_URI_WITH_ADDR =
       "https://www.exclusiveinn.com/wp-json/wc/v3/customers/";
+  static const JSON_CONTENT_TYPE = "application/json";
   static const JWT_ADMIN_TOKEN =
       "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvd3d3LmV4Y2x1c2l2ZWlubi5jb20iLCJpYXQiOjE2MTMzNzUyNjAsIm5iZiI6MTYxMzM3NTI2MCwiZXhwIjoxNjEzOTgwMDYwLCJkYXRhIjp7InVzZXIiOnsiaWQiOiIxIn19fQ.JaqnOGg52AJwlhDxHfoiV3wZ7YWEYAkAxgrWYV9DvpQ";
   //"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdGVzdC5leGNsdXNpdmVpbm4uY29tIiwiaWF0IjoxNjEyOTU5Mjg1LCJuYmYiOjE2MTI5NTkyODUsImV4cCI6MTYxMzU2NDA4NSwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMSJ9fX0.BSscGb9rzg-MIm6qIdHoSx4TJ8fhfo9MibGJ2h05Cng";

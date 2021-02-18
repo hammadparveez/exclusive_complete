@@ -12,7 +12,7 @@ import 'package:sixvalley_ui_kit/view/basewidget/show_custom_snakbar.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/textfield/custom_password_textfield.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/textfield/custom_textfield.dart';
 import 'package:sixvalley_ui_kit/view/screen/dashboard/dashboard_screen.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart' as loader;
 class SignUpWidget extends StatefulWidget {
   @override
   _SignUpWidgetState createState() => _SignUpWidgetState();
