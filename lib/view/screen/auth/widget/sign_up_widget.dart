@@ -86,7 +86,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
             Provider.of<ProfileProvider>(context, listen: false)
                 .assignEmptyAddressList();
-            await Provider.of<ProfileProvider>(context, listen: false)
+            Provider.of<ProfileProvider>(context, listen: false)
                 .getAddressOfUser();
             Navigator.pop(context);
             Provider.of<AuthProvider>(context, listen: false).updateSelectedIndex(0);
@@ -207,6 +207,20 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   validatorMessage: Strings.PLEASE_PROVIDE_A_VALID_EMAIL,
                   textInputType: TextInputType.emailAddress,
                   controller: _emailController,
+                  doValidate: (value) {
+ final regex=                   RegExp(
+                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+ final isEmailValid = regex.hasMatch(value);
+                    if(value.isEmpty) {
+                      return "Email is required";
+                    }
+                    else if(isEmailValid != true) {
+                      return "Email is not valid";
+                    }
+                    else {
+                      return null;
+                    }
+                  },
                 ),
               ),
 
@@ -222,6 +236,11 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   focusNode: _userNameFocus,
                   nextNode: _passwordFocus,
                   controller: _userNameController,
+                  doValidate: (input){
+                    if(input.isEmpty)
+                      return "Username required";
+                    return null;
+                  },
                   //isPhoneNumber: true,
                 ),
               ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sixvalley_ui_kit/provider/product_provider.dart';
 import 'package:sixvalley_ui_kit/provider/wordpress_product_provider.dart';
+import 'package:sixvalley_ui_kit/view/basewidget/custom_scroll_loader.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/product_widget.dart';
 
 class RelatedProductView extends StatefulWidget {
@@ -40,8 +41,8 @@ class _RelatedProductViewState extends State<RelatedProductView> {
           return Column(children: [
 
             wordPressProvider.listOfRelatedProducts != null
-                ? wordPressProvider.listOfRelatedProducts.length != 0
-                    ? GridView.builder(
+                ?CustomLoader(
+              isLoading: wordPressProvider.listOfRelatedProducts.isEmpty, elseWidget: GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: (1 / 1.5),
@@ -59,12 +60,9 @@ class _RelatedProductViewState extends State<RelatedProductView> {
                                   prodProvider.relatedProductList[index]*/
                           );
                         },
-                      )
-                    : Center(
-                        child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                            child: CircularProgressIndicator()))
+                      ),
+
+            )
                 : Center(
                     child: Padding(
                       padding: EdgeInsets.all(10),

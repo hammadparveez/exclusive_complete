@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:sixvalley_ui_kit/data/model/response/category.dart';
 import 'package:sixvalley_ui_kit/provider/product_provider.dart';
@@ -8,7 +9,9 @@ import 'package:sixvalley_ui_kit/utill/color_resources.dart';
 import 'package:sixvalley_ui_kit/utill/custom_themes.dart';
 import 'package:sixvalley_ui_kit/utill/dimensions.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/custom_app_bar.dart';
+import 'package:sixvalley_ui_kit/view/basewidget/custom_scroll_loader.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/no_internet_screen.dart';
+import 'package:sixvalley_ui_kit/view/basewidget/product_shimmer.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/product_widget.dart';
 
 class BrandAndCategoryProductScreen extends StatefulWidget {
@@ -208,16 +211,8 @@ class _BrandAndCategoryProductScreenState
                             ))
                           : Expanded(
                               child:
-                                  Center(child: CircularProgressIndicator())),
-                  wordPressProvider.isLoadingMore
-                      ? Center(
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 20, horizontal: 10),
-                            child: CircularProgressIndicator(),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
+                                  Center(child: ProductShimmer(isEnabled: true))),
+                  CustomScrollLoader(isLoading: wordPressProvider.isLoadingMore)
                 ]);
           },
         ),

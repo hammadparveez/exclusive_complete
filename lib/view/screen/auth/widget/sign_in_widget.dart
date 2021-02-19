@@ -90,7 +90,6 @@ class _SignInWidgetState extends State<SignInWidget> {
         //try {
         final userModel = await authProvider.login(loginBody);
         if (userModel != null) {
-          print("User Logged In successfully");
           Provider.of<ProfileProvider>(context, listen: false)
               .assignEmptyAddressList();
           /*Provider.of<ProfileProvider>(context, listen: false)
@@ -101,32 +100,25 @@ class _SignInWidgetState extends State<SignInWidget> {
                   .initCustomerDetails(userModel.id);*/
           Provider.of<CustomerProvider>(context, listen: false)
               .isFindingCustomer = true;
-          //if (wordPressModel != null) {
-          Provider.of<CartProvider>(context, listen: false).resetCart();
-          /*await Provider.of<CartProvider>(context, listen: false)
-                .getCartData();*/
-          await Provider.of<CartProvider>(context, listen: false)
-              .initTotalCartCount();
-          await Provider.of<ProfileProvider>(context, listen: false)
-              .getAddressOfUser();
           final profileProvider =
               Provider.of<ProfileProvider>(context, listen: false);
-          await profileProvider.fetchRegion();
-          String foundValue = "";
+          profileProvider.fetchRegion().then((value) {
+            String foundValue = "";
+            try {
+              print("Mason }");
+              foundValue = profileProvider.countryModel.keys.firstWhere(
+                      (element) =>
+                  profileProvider.countryModel[element] ==
+                      profileProvider.addressList.first.country);
+              print("Found Value ${foundValue}");
+              Provider.of<ProfileProvider>(context, listen: false)
+                  .updateShipping(countryCode: foundValue);
+            } catch (error) {
+              print("Nothing found in the country loop");
+            }
+            });
+
           print("Mason ${profileProvider.addressList.length}");
-          try {
-            print("Mason }");
-            foundValue = profileProvider.countryModel.keys.firstWhere(
-                (element) =>
-                    profileProvider.countryModel[element] ==
-                    profileProvider.addressList.first.country);
-            print("Found Value ${foundValue}");
-            Provider.of<ProfileProvider>(context, listen: false)
-                .updateShipping(countryCode: foundValue);
-          } catch (error) {
-            print("Nothing found in the country loop");
-          } finally {
-            Navigator.pop(context);
 
             //showCustomSnackBar("Something went wrong or Invalid credentials", context);
             print('Redirection check ${widget.redirect}');
@@ -139,12 +131,12 @@ class _SignInWidgetState extends State<SignInWidget> {
                   ),
                   (_) => false);
             }
-          }
-        } else {
+          } else {
           Navigator.pop(context);
           showCustomSnackBar("Username/Password is incorrect.", context);
         }
-        print("Is user is logged in $userModel");
+
+
         /*} catch (e) {
           print("${e}");
           //Navigator.pop(context);

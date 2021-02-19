@@ -93,10 +93,6 @@ class WordPressProductRepo {
         url: PER_PAGE_PRODUCTS,
         callback: get);
     print("Per page Prducts: ${products["products"].length}");
-    //if (products != null && products["pro
-    //       print("XXXXXXXXXXXXX $x");ducts"] != null)
-    final x = products["products"] as List;
-    x.forEach((element) {});
     return products["products"];
     //return [];
   }

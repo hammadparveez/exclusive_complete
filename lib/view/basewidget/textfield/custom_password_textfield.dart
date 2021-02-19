@@ -37,6 +37,7 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
         ],
       ),
       child: TextFormField(
+
         cursorColor: ColorResources.COLOR_PRIMARY,
         controller: widget.controller,
         obscureText: _obscureText,
@@ -50,9 +51,15 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
           });
         },
         validator: (value) {
+          if(value.isEmpty)
+            return "Password is required";
+          else if(value.length < 8)
+            return "Password must be at least 8 character long";
+          else
           return null;
         },
         decoration: InputDecoration(
+
             suffixIcon: IconButton(icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off), onPressed: _toggle),
             hintText: widget.hintTxt ?? '',
             contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),

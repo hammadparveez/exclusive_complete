@@ -23,7 +23,7 @@ class CustomTextField extends StatelessWidget {
   final bool isValidator;
   final String validatorMessage;
   final Color fillColor;
-
+  final Function(String) doValidate;
   CustomTextField(
       {this.controller,
       this.hintText,
@@ -35,7 +35,7 @@ class CustomTextField extends StatelessWidget {
       this.isPhoneNumber = false,
       this.isValidator=false,
       this.validatorMessage,
-      this.fillColor});
+      this.fillColor, this.doValidate});
 
   @override
   Widget build(context) {
@@ -62,15 +62,7 @@ class CustomTextField extends StatelessWidget {
         },
         //autovalidate: true,
         inputFormatters: [isPhoneNumber ? FilteringTextInputFormatter.digitsOnly : FilteringTextInputFormatter.singleLineFormatter],
-        validator: (input){
-          if(input.isEmpty){
-            if(isValidator){
-              return validatorMessage??"";
-            }
-          }
-          return null;
-
-        },
+        validator: doValidate,
         decoration: InputDecoration(
           hintText: hintText ?? '',
           filled: fillColor != null,

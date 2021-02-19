@@ -8,7 +8,7 @@ class AppConstants {
   static const TAG_NET_DIALOG = "internet_dialog";
   static const TAG_THUMBNAIL_IMG = "thumbnail_image_load";
   //Durations
-  static const TIMED_OUT_20 = Duration(seconds: 20 + 10);
+  static const TIMED_OUT_20 = Duration(seconds: 60);
 
   static const String NO_PRODUCTS_FOUND =
       "No products were found matching your selection";

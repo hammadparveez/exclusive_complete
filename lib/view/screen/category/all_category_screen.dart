@@ -16,6 +16,7 @@ import 'package:sixvalley_ui_kit/utill/custom_themes.dart';
 import 'package:sixvalley_ui_kit/utill/dimensions.dart';
 import 'package:sixvalley_ui_kit/utill/string_resources.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/custom_app_bar.dart';
+import 'package:sixvalley_ui_kit/view/basewidget/custom_scroll_loader.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/product_widget.dart';
 import 'package:sixvalley_ui_kit/view/screen/product/brand_and_category_product_screen.dart';
 
@@ -252,13 +253,11 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
                     ),
                     Expanded(
                       child: LayoutBuilder(builder: (_, constraints) {
-                        return !wordPressProvider.isLoadingProducts
-                            ? wordPressProvider.listOfRandomProducts.length >
-                                        0 ||
+                        return CustomLoader(isLoading: wordPressProvider.isLoadingProducts,
+                            elseWidget:  wordPressProvider.listOfRandomProducts.isNotEmpty ||
                                     wordPressProvider
-                                            .listOfCategoryProducts.length >
-                                        0
-                                ? SingleChildScrollView(
+                                            .listOfCategoryProducts.isNotEmpty
+                                  ? SingleChildScrollView(
                                     controller: _scrollController,
                                     physics: BouncingScrollPhysics(),
                                     child: Column(
@@ -301,19 +300,11 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
                                             //: Container(); //productModel: productList[index]);
                                           },
                                         ),
-                                        wordPressProvider.isLoadingMore
-                                            ? Padding(
-                                                padding: EdgeInsets.all(10),
-                                                child: Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                ),
-                                              )
-                                            : const SizedBox(),
+                                        CustomScrollLoader(isLoading: wordPressProvider.isLoadingMore),
+
                                       ],
                                     ),
                                   )
-                                //: Center(child: CircularProgressIndicator())
                                 : SingleChildScrollView(
                                     controller: _scrollController,
                                     child: Row(
@@ -329,11 +320,11 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
                                             style: titilliumSemiBold),
                                       ],
                                     ),
-                                  )
-                            : Padding(
+                        ) );
+                            /*: Padding(
                                 padding: EdgeInsets.all(8),
                                 child:
-                                    Center(child: CircularProgressIndicator()));
+                                    Center(child: CircularProgressIndicator()))*/;
                       }),
                     )
                   ],

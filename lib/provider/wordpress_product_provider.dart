@@ -119,17 +119,15 @@ class WordPressProductProvider extends ChangeNotifier {
         .initBrandAndCategoryProducts(pageCount, slug);
     print("List Of Categoriez Products ${listOfCategorizedProducts.length}");
 
-    listOfCategorizedProducts.forEach((element) {
-      print("Elements are ${element["variations"].length > 0}");
+  /*  listOfCategorizedProducts.forEach((element) {
       if (element["variations"].length > 0 && element["in_stock"])
         listOfCategoryProducts.add(WordPressProductModel.fromJson(element));
-    });
-    listOfCategoryProducts.forEach((element) {
-      element.variations.forEach((element) {
-        print(
-            "Prices are : ${element.price} and ${element.regular_price} $slug");
-      });
-    });
+    });*/
+    listOfCategorizedProducts.where((element) {
+      if (element["variations"].length > 0 && element["in_stock"])
+        listOfCategoryProducts.add(WordPressProductModel.fromJson(element));
+      return (element["variations"].length > 0 && element["in_stock"]);
+    }).toList();
     _isLoadingMore = false;
     _isLoadingProducts = false;
     notifyListeners();
