@@ -5,8 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sixvalley_ui_kit/provider/auth_provider.dart';
 import 'package:sixvalley_ui_kit/provider/cart_provider.dart';
+import 'package:sixvalley_ui_kit/provider/category_provider.dart';
 import 'package:sixvalley_ui_kit/provider/profile_provider.dart';
 import 'package:sixvalley_ui_kit/provider/splash_provider.dart';
+import 'package:sixvalley_ui_kit/provider/wordpress_product_provider.dart';
 import 'package:sixvalley_ui_kit/utill/color_resources.dart';
 import 'package:sixvalley_ui_kit/view/screen/dashboard/dashboard_screen.dart';
 import 'package:sixvalley_ui_kit/view/screen/onboarding/onboarding_screen.dart';
@@ -37,6 +39,9 @@ class _SplashScreenState extends State<SplashScreen>
     _animationController.repeat(reverse: true);*/
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<SplashProvider>(context, listen: false).initSharedPrefData();
+      Provider.of<CategoryProvider>(context, listen: false).initCategoryList();
+      Provider.of<WordPressProductProvider>(context, listen: false)
+          .initFeaturedProducts();
       Provider.of<CartProvider>(context, listen: false).initTotalCartCount();
       Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
       Provider.of<ProfileProvider>(context, listen: false).getHomeAddress();
@@ -45,7 +50,6 @@ class _SplashScreenState extends State<SplashScreen>
           .then((bool isSuccess) {
         if (isSuccess) {
           Timer(Duration(milliseconds: 1500), () async {
-            //sharedPerf.setBool("onBoardSeen", true);
             final sharedPerf = await SharedPreferences.getInstance();
             if (sharedPerf.getBool("onBoardSeen") != null) {
               Navigator.of(context).pushReplacement(
@@ -55,15 +59,6 @@ class _SplashScreenState extends State<SplashScreen>
               Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => OnBoardingScreen()));
             }
-            /* if (Provider.of<AuthProvider>(context, listen: false)
-                .isLoggedIn()) {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (BuildContext context) => DashBoardScreen()));
-            } else {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (BuildContext context) => OnBoardingScreen(
-                      indicatorColor: ColorResources.GREY,
-                      selectedIndicatorColor: ColorResources.COLOR_PRIMARY)));*/
           });
         }
       });

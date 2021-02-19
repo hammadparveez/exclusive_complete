@@ -38,6 +38,7 @@ class BillingAddressRepo {
           "Accept": "application/json",
           HttpHeaders.contentTypeHeader: 'application/json',
           HttpHeaders.authorizationHeader: AppConstants.JWT_ADMIN_TOKEN,
+          HttpHeaders.connectionHeader: AppConstants.KEEP_ALIVE,
         });
     final json = jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {

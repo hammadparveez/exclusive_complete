@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:sixvalley_ui_kit/data/model/response/product_model.dart';
 import 'package:sixvalley_ui_kit/data/model/response/wordpress_product_model.dart';
 import 'package:sixvalley_ui_kit/data/model/response/wp_product_model.dart';
 import 'package:sixvalley_ui_kit/provider/cart_provider.dart';
 import 'package:sixvalley_ui_kit/provider/product_details_provider.dart';
 import 'package:sixvalley_ui_kit/provider/wordpress_product_provider.dart';
-import 'package:sixvalley_ui_kit/utill/app_constants.dart';
 import 'package:sixvalley_ui_kit/utill/color_resources.dart';
 import 'package:sixvalley_ui_kit/utill/custom_themes.dart';
 import 'package:sixvalley_ui_kit/utill/dimensions.dart';
 import 'package:sixvalley_ui_kit/utill/string_resources.dart';
-import 'package:sixvalley_ui_kit/view/basewidget/no_internet_dialog.dart';
-import 'package:sixvalley_ui_kit/view/basewidget/request_time_out_dialog.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/title_row.dart';
 import 'package:sixvalley_ui_kit/view/screen/product/widget/bottom_cart_view.dart';
 import 'package:sixvalley_ui_kit/view/screen/product/widget/product_image_view.dart';
@@ -50,15 +45,16 @@ class _ProductDetailsState extends State<ProductDetails> {
       wordPressProvider.resetProduct();
       wordPressProvider.resetRelatedProducts();
       wordPressProvider.initDetailProduct(productID: widget.productID);
-      wordPressProvider.initRelatedProduct(listRelatedItems:widget.wordPressProductModel.related_ids);
+      wordPressProvider.initRelatedProduct(
+          listRelatedItems: widget.wordPressProductModel.related_ids);
       //Provider.of<CartProvider>(context, listen: false).initTotalCartCount();
       if (wordPressProvider.isNoInternet) {
-       /* showDialog(
+        /* showDialog(
             context: context,
             barrierDismissible: false,
             child: NoInterNetDialog());*/
       } else if (wordPressProvider.isRequestTimedOut) {
-       /* showDialog(
+        /* showDialog(
             context: context,
             barrierDismissible: false,
             child: RequestTimedOutDialog());*/
@@ -67,11 +63,30 @@ class _ProductDetailsState extends State<ProductDetails> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final relatedProducts =
+        context.watch<WordPressProductProvider>().listOfRelatedProducts;
+    final productById =
+        context.watch<WordPressProductProvider>().wordPressProductModelByID;
+    if (productById != null) {
+      productById.images.forEach((image) {
+        precacheImage(NetworkImage(image.src), context);
+        precacheImage(NetworkImage(image.shop_catalog), context);
+      });
+    }
+
+    relatedProducts.forEach((feature) {
+      if (feature.thumbnail_img != null)
+        precacheImage(NetworkImage(feature.thumbnail_img.first), context);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer3<ProductDetailsProvider, WordPressProductProvider,
         CartProvider>(
       builder: (context, details, wordPressProvider, cartProvider, child) {
-
         return
             //wordPressProvider.wordPressProductModelByID != null
             Scaffold(
@@ -104,8 +119,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ProductImageView(
                     productModel: model,
                     wordPressProductModel:
-                        wordPressProvider.wordPressProductModelByID) ,
-                           /*Shimmer.fromColors(
+                        wordPressProvider.wordPressProductModelByID),
+                /*Shimmer.fromColors(
                     baseColor: Colors.grey[300],
                         highlightColor: Colors.grey[100],
                         enabled: true,
@@ -116,7 +131,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 borderRadius: BorderRadius.circular(10),
                                 color: ColorResources.WHITE),
                         )),*/
-
 
                 ProductTitleView(
                   productModel: widget.product,

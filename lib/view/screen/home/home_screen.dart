@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart' as loader;
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sixvalley_ui_kit/helper/product_type.dart';
@@ -17,8 +18,6 @@ import 'package:sixvalley_ui_kit/utill/dimensions.dart';
 import 'package:sixvalley_ui_kit/utill/images.dart';
 import 'package:sixvalley_ui_kit/utill/string_resources.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/animated_custom_dialog.dart';
-import 'package:sixvalley_ui_kit/view/basewidget/no_internet_dialog.dart';
-import 'package:sixvalley_ui_kit/view/basewidget/request_time_out_dialog.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/title_row.dart';
 import 'package:sixvalley_ui_kit/view/screen/auth/auth_screen.dart';
 import 'package:sixvalley_ui_kit/view/screen/cart/cart_screen.dart';
@@ -30,7 +29,7 @@ import 'package:sixvalley_ui_kit/view/screen/home/widget/products_view.dart';
 import 'package:sixvalley_ui_kit/view/screen/more/more_screen.dart';
 import 'package:sixvalley_ui_kit/view/screen/more/widget/app_info_dialog.dart';
 import 'package:sixvalley_ui_kit/view/screen/search/search_screen.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart' as loader;
+
 Future myTopLevelBg(Map<String, dynamic> message) async {
   print("This is my top level function $message");
   //return 0;
@@ -48,46 +47,45 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool isDismissed = false;
   final ScrollController _scrollController = ScrollController();
 
   final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
   AnimationController _animationController;
-  Animation<Offset> _animation ;
+  Animation<Offset> _animation;
   Tween<Offset> _tween;
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(duration: Duration(milliseconds: 500), vsync: this);
-    _tween = Tween(begin: Offset(0, 0), end: Offset(Get.width, Get.height));
-    _animation = _tween.animate(_animationController);
+    _animationController = AnimationController(
+        duration: Duration(milliseconds: 300),
+        vsync: this,
+        reverseDuration: Duration(milliseconds: 300));
     //After the build
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     showDialog(context: context, builder:(_) {
-       return    Material(
-         type: MaterialType.transparency,
-         child: Center(
-           child: Column(
-               mainAxisSize: MainAxisSize.min,
-               children: [
-                 loader.SpinKitCubeGrid(color: ColorResources.WEB_PRIMARY_COLOR, size: 100),
-                 SizedBox(height: 10),
-                 Text("Please wait a sec...", style: titilliumSemiBold.copyWith(color: ColorResources.WHITE)),
-               ]),
-         ),
-       );
-     });
-         //loader.SpinKitFoldingCube(color: ColorResources.PRIMARY_COLOR_BIT_DARK));
-      Provider.of<CartProvider>(context, listen: false).resetCart();
-      Provider.of<ProfileProvider>(context, listen: false)
-          .getAddressOfUser();
-      Provider.of<CategoryProvider>(context, listen: false).initCategoryList();
-      Provider.of<WordPressProductProvider>(context, listen: false)
-          .initFeaturedProducts();
-
-      await Provider.of<CartProvider>(context, listen: false)
-          .getCartData();
+      showDialog(
+          context: context,
+          builder: (_) {
+            return Material(
+              type: MaterialType.transparency,
+              child: Center(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  loader.SpinKitCubeGrid(
+                      color: ColorResources.WEB_PRIMARY_COLOR, size: 100),
+                  SizedBox(height: 10),
+                  Text("Please wait a sec...",
+                      style: titilliumSemiBold.copyWith(
+                          color: ColorResources.WHITE)),
+                ]),
+              ),
+            );
+          });
+      //loader.SpinKitFoldingCube(color: ColorResources.PRIMARY_COLOR_BIT_DARK));
+      if (Provider.of<AuthProvider>(context, listen: false).isInvalidAuth) {
+        Provider.of<ProfileProvider>(context, listen: false).getAddressOfUser();
+        await Provider.of<CartProvider>(context, listen: false).getCartData();
+      }
       Get.back();
 
       //final firebase = FirebaseMessaging();
@@ -122,7 +120,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   Widget build(BuildContext context) {
     //_animationController.reset();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     /* showDialog(context: context, builder:(_) {
+      /* showDialog(context: context, builder:(_) {
         return
         Material(
           type: MaterialType.transparency,
@@ -137,7 +135,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
           ),
         );
         });*/
-     /* if (context.read<CategoryProvider>().isInternet) {
+      /* if (context.read<CategoryProvider>().isInternet) {
         showDialog(
             context: context,
             child: NoInterNetDialog(singleBack: true),
@@ -183,12 +181,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
         }
 */
 
-          Provider.of<CartProvider>(context, listen: false)
-              .initTotalCartCount();
-          if (categoryProvider.categoryList.isEmpty)
-            categoryProvider.initCategoryList();
-          if (wordPressProvider.listOfFeaturedProducts.isEmpty)
-            wordPressProvider.initFeaturedProducts();
+        Provider.of<CartProvider>(context, listen: false).initTotalCartCount();
+        if (categoryProvider.categoryList.isEmpty)
+          categoryProvider.initCategoryList();
+        if (wordPressProvider.listOfFeaturedProducts.isEmpty)
+          wordPressProvider.initFeaturedProducts();
 
         return true;
       },
@@ -200,100 +197,110 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
         //drawer: Transform.translate(offset: _animation.value, child: _CustomDrawer()),
 
         body: AnimatedBuilder(
-          animation: _animationController,
-        builder: (_,child) {
-          final scale = 1-(_animationController.value*0.45);
-          return Stack
-            (
-            children: [
-              Scaffold(body: _CustomDrawer(isDismissed: isDismissed, onPress: () {_animationController.reverse(); isDismissed = !isDismissed;},)),
-              Transform(
-                  alignment: Alignment.centerRight,
-                  transform: Matrix4.identity()
-                    ..scale(scale),
-                  child: Scaffold(body: SafeArea(
-                    child: CustomScrollView(
-
-                      physics: AlwaysScrollableScrollPhysics(),
-                      controller: _scrollController,
-                      //physics: Bouncin  gScrollPhysics(),
-                      slivers: [
-                        // App Bar
-                        SliverAppBar(
-                          leading: IconButton(
-                              icon: Icon(Icons.notes),
-                              color: Colors.black,
-                              onPressed: () {
-                                setState(() {
-                                  isDismissed ?
-                                  _animationController.reverse():
-                                  _animationController.forward();
-
-                                });
-                                isDismissed = !isDismissed;
-
-                              }
-                            //  _drawerKey.currentState.openDrawer(); }
-                          ),
-                          floating: true,
-                          elevation: 0,
-                          centerTitle: true,
-                          automaticallyImplyLeading: false,
-                          backgroundColor: ColorResources.WHITE,
-                          title: Image.asset(
-                              Images.company_logo_big, height: 45),
-                          actions: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(
-                                        builder: (_) => CartScreen()));
-                              },
-                              icon: Stack(
-                                  overflow: Overflow.visible, children: [
-                                Image.asset(
-                                  Images.cart_arrow_down_image,
-                                  height: Dimensions.ICON_SIZE_DEFAULT,
-                                  width: Dimensions.ICON_SIZE_DEFAULT,
-                                  color: ColorResources.PRIMARY_COLOR,
-                                ),
-                                Consumer<CartProvider>(
-                                  builder: (_, cartsProvider, child) =>
-                                      Positioned(
-                                        top: -4,
-                                        right: -4,
-                                        child: CircleAvatar(
-                                          radius: 7,
-                                          backgroundColor: ColorResources.RED,
-                                          child: Text(
-                                              cartsProvider.totalItemsInCart
-                                                  .toString(),
-                                              style: titilliumSemiBold.copyWith(
-                                                color: ColorResources.WHITE,
-                                                fontSize: Dimensions
-                                                    .FONT_SIZE_EXTRA_SMALL,
-                                              )),
+            animation: _animationController,
+            builder: (_, child) {
+              final scale = 1 - (_animationController.value * 0.7);
+              return Stack(
+                children: [
+                  Scaffold(
+                      body: _CustomDrawer(
+                    isDismissed: isDismissed,
+                    onPress: () {
+                      _animationController.reverse();
+                      isDismissed = !isDismissed;
+                    },
+                  )),
+                  Transform(
+                    alignment: Alignment.centerRight,
+                    transform: Matrix4.identity()
+                      ..scale(
+                        scale,
+                      ),
+                    child: Scaffold(
+                      body: SafeArea(
+                        child: CustomScrollView(
+                          physics: AlwaysScrollableScrollPhysics(),
+                          controller: _scrollController,
+                          //physics: Bouncin  gScrollPhysics(),
+                          slivers: [
+                            // App Bar
+                            SliverAppBar(
+                              leading: IconButton(
+                                  icon: Icon(Icons.notes),
+                                  color: Colors.black,
+                                  onPressed: () {
+                                    setState(() {
+                                      isDismissed
+                                          ? _animationController.reverse()
+                                          : _animationController.forward();
+                                    });
+                                    isDismissed = !isDismissed;
+                                  }
+                                  //  _drawerKey.currentState.openDrawer(); }
+                                  ),
+                              floating: true,
+                              elevation: 0,
+                              centerTitle: true,
+                              automaticallyImplyLeading: false,
+                              backgroundColor: ColorResources.WHITE,
+                              title: Image.asset(Images.company_logo_big,
+                                  height: 45),
+                              actions: [
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => CartScreen()));
+                                  },
+                                  icon: Stack(
+                                      overflow: Overflow.visible,
+                                      children: [
+                                        Image.asset(
+                                          Images.cart_arrow_down_image,
+                                          height: Dimensions.ICON_SIZE_DEFAULT,
+                                          width: Dimensions.ICON_SIZE_DEFAULT,
+                                          color: ColorResources.PRIMARY_COLOR,
                                         ),
-                                      ),
-                                ),
-                              ]),
-                            )
-                          ],
-                        ),
+                                        Consumer<CartProvider>(
+                                          builder: (_, cartsProvider, child) =>
+                                              Positioned(
+                                            top: -4,
+                                            right: -4,
+                                            child: CircleAvatar(
+                                              radius: 7,
+                                              backgroundColor:
+                                                  ColorResources.RED,
+                                              child: Text(
+                                                  cartsProvider.totalItemsInCart
+                                                      .toString(),
+                                                  style: titilliumSemiBold
+                                                      .copyWith(
+                                                    color: ColorResources.WHITE,
+                                                    fontSize: Dimensions
+                                                        .FONT_SIZE_EXTRA_SMALL,
+                                                  )),
+                                            ),
+                                          ),
+                                        ),
+                                      ]),
+                                )
+                              ],
+                            ),
 
-                        // Search Button
-                        SliverPersistentHeader(
-                            pinned: true,
-                            delegate: SliverDelegate(
-                                child: InkWell(
-                                  onTap: () =>
-                                      Navigator.push(context,
-                                          MaterialPageRoute(
-                                              builder: (_) => SearchScreen())),
+                            // Search Button
+                            SliverPersistentHeader(
+                                pinned: true,
+                                delegate: SliverDelegate(
+                                    child: InkWell(
+                                  onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => SearchScreen())),
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: Dimensions
-                                            .PADDING_SIZE_SMALL,
+                                        horizontal:
+                                            Dimensions.PADDING_SIZE_SMALL,
                                         vertical: 2),
                                     color: ColorResources.WHITE,
                                     alignment: Alignment.center,
@@ -321,71 +328,71 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                                   ),
                                 ))),
 
-                        SliverToBoxAdapter(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding:
-                                EdgeInsets.only(
-                                    top: Dimensions.PADDING_SIZE_LARGE),
-                                child: BannersView(),
-                              ),
+                            SliverToBoxAdapter(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: Dimensions.PADDING_SIZE_LARGE),
+                                    child: BannersView(),
+                                  ),
 
-                              // Category
+                                  // Category
 
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                    Dimensions.PADDING_SIZE_SMALL,
-                                    20,
-                                    Dimensions.PADDING_SIZE_SMALL,
-                                    Dimensions.PADDING_SIZE_SMALL),
-                                child: TitleRow(
-                                    title: Strings.CATEGORY,
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) =>
-                                                  AllCategoryScreen()));
-                                    }),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: Dimensions.PADDING_SIZE_SMALL),
-                                child: CategoryView(
-                                  isHomePage: true,
-                                ),
-                              ),
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(
+                                        Dimensions.PADDING_SIZE_SMALL,
+                                        20,
+                                        Dimensions.PADDING_SIZE_SMALL,
+                                        Dimensions.PADDING_SIZE_SMALL),
+                                    child: TitleRow(
+                                        title: Strings.CATEGORY,
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      AllCategoryScreen()));
+                                        }),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal:
+                                            Dimensions.PADDING_SIZE_SMALL),
+                                    child: CategoryView(
+                                      isHomePage: true,
+                                    ),
+                                  ),
 
-                              // Top Products
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                    Dimensions.PADDING_SIZE_SMALL,
-                                    20,
-                                    Dimensions.PADDING_SIZE_SMALL,
-                                    Dimensions.PADDING_SIZE_SMALL),
-                                child: TitleRow(title: Strings.latest_products),
+                                  // Top Products
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(
+                                        Dimensions.PADDING_SIZE_SMALL,
+                                        20,
+                                        Dimensions.PADDING_SIZE_SMALL,
+                                        Dimensions.PADDING_SIZE_SMALL),
+                                    child: TitleRow(
+                                        title: Strings.latest_products),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal:
+                                            Dimensions.PADDING_SIZE_SMALL),
+                                    child: ProductView(
+                                        productType: ProductType.LATEST_PRODUCT,
+                                        scrollController: _scrollController),
+                                  ),
+                                ],
                               ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: Dimensions.PADDING_SIZE_SMALL),
-                                child: ProductView(
-                                    productType: ProductType.LATEST_PRODUCT,
-                                    scrollController: _scrollController),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+                            )
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                  ),
-                ),
-
-            ],
-          );
-        }
-        ),
+                ],
+              );
+            }),
       ),
     );
   }
@@ -425,8 +432,8 @@ class _CustomDrawer extends StatelessWidget {
   final VoidCallback onPress;
   final bool isDismissed;
 
-
-  const _CustomDrawer({Key key, this.onPress, this.isDismissed = false}) : super(key: key);
+  const _CustomDrawer({Key key, this.onPress, this.isDismissed = false})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Consumer2<AuthProvider, ProfileProvider>(
@@ -566,8 +573,8 @@ class _CustomDrawer extends StatelessWidget {
                     title: Text(Strings.app_info,
                         style: titilliumRegular.copyWith(
                             fontSize: Dimensions.FONT_SIZE_LARGE)),
-                    onTap: () =>
-                        showAnimatedDialog(context, AppInfoDialog(), isFlip: true),
+                    onTap: () => showAnimatedDialog(context, AppInfoDialog(),
+                        isFlip: true),
                   ),
 
                   TitleButton(
@@ -586,8 +593,8 @@ class _CustomDrawer extends StatelessWidget {
                                   title: Column(
                                     children: [
                                       CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation(Colors.black87),
+                                        valueColor: AlwaysStoppedAnimation(
+                                            Colors.black87),
                                       ),
                                       const SizedBox(height: 10),
                                       Text("Signing out...")
@@ -614,13 +621,16 @@ class _CustomDrawer extends StatelessWidget {
                   TitleButton(
                       image: "assets/images/exit-512.png",
                       title: "Quit",
-                      onTap: () => SystemNavigator.pop(animated: true)),
+                      onTap: () {
+                        imageCache.clear();
+                        SystemNavigator.pop(animated: true);
+                      }),
                 ],
               ),
             ),
             Positioned(
-                top: (Get.height/100) * 84,
-                right: (Get.width/100) *3,
+                top: (Get.height / 100) * 84,
+                right: (Get.width / 100) * 3,
                 child: Material(
                   type: MaterialType.transparency,
                   shape: CircleBorder(),
@@ -631,8 +641,7 @@ class _CustomDrawer extends StatelessWidget {
                     padding: EdgeInsets.all(Dimensions.MARGIN_SIZE_DEFAULT),
                     child: Icon(Icons.close, color: ColorResources.WHITE),
                   ),
-                )
-            ),
+                )),
           ],
         ),
       );

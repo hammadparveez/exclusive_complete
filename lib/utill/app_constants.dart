@@ -2,7 +2,7 @@ import 'dart:io';
 
 class AppConstants {
   //check uri network
-
+  static const KEEP_ALIVE = "keep-alive";
   static const NETWORK_URI = "https://www.google.com/";
   //Hero widget tag
   static const TAG_NET_DIALOG = "internet_dialog";
@@ -97,8 +97,8 @@ class AppConstants {
       "https://www.exclusiveinn.com/wp-json/wc/v3/products?include=";
   //pages counts
   static const PRODUCTS_BY_ID_URI =
-  "https://www.exclusiveinn.com/wp-json/wc/v3/products/";
-      //"https://www.exclusiveinn.com/wc-api/v3/products/";
+      "https://www.exclusiveinn.com/wp-json/wc/v3/products/";
+  //"https://www.exclusiveinn.com/wc-api/v3/products/";
   // "https://www.exclusiveinn.com/wp-json/wc/store/products/";
   static const CATEGORY_COUNT_URI =
       "https://www.exclusiveinn.com/wc-api/v3/products/count?filter[category]=";
@@ -189,6 +189,7 @@ class AppConstants {
     HttpHeaders.authorizationHeader:
         //"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvd3d3LmV4Y2x1c2l2ZWlubi5jb20iLCJpYXQiOjE2MTIyNTI2NzMsIm5iZiI6MTYxMjI1MjY3MywiZXhwIjoxNjEyODU3NDczLCJkYXRhIjp7InVzZXIiOnsiaWQiOiIxIn19fQ.lVPW24IkvDNLIEiWpMN7X6EUOKcFmd-q86HTnFOUBfU",
         "Basic Y2tfM2Y5MTcwMGZhMTQ4YTMxYmVjMWU1MzZlYTEwNWJlMGFlZWE2NjRhYzpjc183M2U0ODZkZDU1YjBhNDE1NDY3ZDcyZmY2MjgxYmRiMDNiNzVmNjBk",
+    HttpHeaders.connectionHeader: AppConstants.KEEP_ALIVE,
     //"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvd3d3LmV4Y2x1c2l2ZWlubi5jb20iLCJpYXQiOjE2MTIyNDYxMzksIm5iZiI6MTYxMjI0NjEzOSwiZXhwIjoxNjEyODUwOTM5LCJkYXRhIjp7InVzZXIiOnsiaWQiOiIyMzc2OSJ9fX0.pD--hKo3ZDwK2W9qCJigrJFMAraoC_oZo2OfORT8ff4, Basic Y2tfM2Y5MTcwMGZhMTQ4YTMxYmVjMWU1MzZlYTEwNWJlMGFlZWE2NjRhYzpjc183M2U0ODZkZDU1YjBhNDE1NDY3ZDcyZmY2MjgxYmRiMDNiNzVmNjBk"
   };
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:sixvalley_ui_kit/data/model/response/category.dart';
 import 'package:sixvalley_ui_kit/provider/product_provider.dart';
@@ -73,6 +72,16 @@ class _BrandAndCategoryProductScreenState
         }
       } else if (offSet > (maxExtent + 40)) {
       } else {}
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final categoryProducts =
+        context.watch<WordPressProductProvider>().listOfCategoryProducts;
+    categoryProducts.forEach((feature) {
+      precacheImage(NetworkImage(feature.thumbnail_img.first), context);
     });
   }
 
@@ -210,8 +219,8 @@ class _BrandAndCategoryProductScreenState
                                           0) */
                             ))
                           : Expanded(
-                              child:
-                                  Center(child: ProductShimmer(isEnabled: true))),
+                              child: Center(
+                                  child: ProductShimmer(isEnabled: true))),
                   CustomScrollLoader(isLoading: wordPressProvider.isLoadingMore)
                 ]);
           },

@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sixvalley_ui_kit/data/model/response/wordpress_product_model.dart';
 import 'package:sixvalley_ui_kit/utill/app_constants.dart';
 import 'package:sixvalley_ui_kit/utill/decode_json.dart';
-import 'package:http/http.dart';
+
 class WordPressProductRepo {
   final SharedPreferences perfs;
 
@@ -17,7 +17,9 @@ class WordPressProductRepo {
     print("Feature PRoducts URL ${AppConstants.WP_FEATURE_PRODUCTS_URI}");
     String featureProductsBody;
     if (perfs.containsKey(AppConstants.FEATURED_PRODUCTS)) {
-      featureProductsBody = perfs.get(AppConstants.FEATURED_PRODUCTS);
+      featureProductsBody = perfs.get(
+        AppConstants.FEATURED_PRODUCTS,
+      );
       print("Products being fetched from LocalStorage $featureProductsBody");
     }
     final data = await DecodeToJson.decodeFromJsonOrUrl(
@@ -70,8 +72,12 @@ class WordPressProductRepo {
   }
 
   Future iniDetailPage(int productID) async {
-    final response = await get("${AppConstants.PRODUCTS_BY_ID_URI}${productID}", headers: {HttpHeaders.authorizationHeader: AppConstants.JWT_ADMIN_TOKEN});
-    final product =  jsonDecode(response.body);
+    final response =
+        await get("${AppConstants.PRODUCTS_BY_ID_URI}${productID}", headers: {
+      HttpHeaders.authorizationHeader: AppConstants.JWT_ADMIN_TOKEN,
+      HttpHeaders.connectionHeader: AppConstants.KEEP_ALIVE,
+    });
+    final product = jsonDecode(response.body);
     print("Product from Map $product");
     return WordPressProductModel.fromJson(product);
   }
@@ -104,31 +110,34 @@ class WordPressProductRepo {
     )
   }*/
 
-
-  Future<List<WordPressProductModel>> getRelatedProducts(List listRelatedItems) async {
+  Future<List<WordPressProductModel>> getRelatedProducts(
+      List listRelatedItems) async {
     String editedUrl = "${AppConstants.RELATED_PRODUCTS_BY_ID_URI}";
     for (int i = 0; i < listRelatedItems.length; i++) {
-      if(i == listRelatedItems.length-1)
+      if (i == listRelatedItems.length - 1)
         editedUrl += "${listRelatedItems[i]}";
       else
         editedUrl += "${listRelatedItems[i]},";
     }
-  print("${editedUrl}");
-    final response = await get(editedUrl, headers: {HttpHeaders.authorizationHeader: AppConstants.JWT_ADMIN_TOKEN, HttpHeaders.contentTypeHeader: AppConstants.JSON_CONTENT_TYPE})
-        .timeout(AppConstants.TIMED_OUT_20, onTimeout: () {print("Timed Out");})
-        .catchError((error) {
-          print("Eror Occured");
+    print("${editedUrl}");
+    final response = await get(editedUrl, headers: {
+      HttpHeaders.authorizationHeader: AppConstants.JWT_ADMIN_TOKEN,
+      HttpHeaders.contentTypeHeader: AppConstants.JSON_CONTENT_TYPE,
+      HttpHeaders.connectionHeader: AppConstants.KEEP_ALIVE,
+    }).timeout(AppConstants.TIMED_OUT_20, onTimeout: () {
+      print("Timed Out");
+    }).catchError((error) {
+      print("Eror Occured");
     });
-    if(response != null && response.statusCode == 200) {
+    if (response != null && response.statusCode == 200) {
       final relatedItems = jsonDecode(response.body);
       final items = relatedItems as List;
-      final convertedData = items.map((e) => WordPressProductModel.fromJson(e)).toList();
+      final convertedData =
+          items.map((e) => WordPressProductModel.fromJson(e)).toList();
       return convertedData;
-    }else
+    } else
       return null;
-
   }
-
 
   //Decoding FeaturePrducts
   Future<T> decodeFromJsonOrUrl<T>({

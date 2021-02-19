@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sixvalley_ui_kit/provider/auth_provider.dart';
+import 'package:sixvalley_ui_kit/provider/cart_provider.dart';
+import 'package:sixvalley_ui_kit/provider/category_provider.dart';
 import 'package:sixvalley_ui_kit/provider/profile_provider.dart';
+import 'package:sixvalley_ui_kit/provider/wordpress_product_provider.dart';
 import 'package:sixvalley_ui_kit/utill/color_resources.dart';
 import 'package:sixvalley_ui_kit/utill/custom_themes.dart';
 import 'package:sixvalley_ui_kit/utill/dimensions.dart';
@@ -14,8 +17,42 @@ import 'package:sixvalley_ui_kit/view/screen/more/more_screen.dart';
 import 'package:sixvalley_ui_kit/view/screen/order/order_screen.dart';
 import 'package:sixvalley_ui_kit/view/screen/profile/profile_screen.dart';
 
-class DashBoardScreen extends StatelessWidget {
+class DashBoardScreen extends StatefulWidget {
+  @override
+  _DashBoardScreenState createState() => _DashBoardScreenState();
+}
+
+class _DashBoardScreenState extends State<DashBoardScreen> {
   final PageController _pageController = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<CartProvider>(context, listen: false).resetCart();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final categoryList = context.watch<CategoryProvider>().categoryList;
+    final featureProducts =
+        context.watch<WordPressProductProvider>().listOfFeaturedProducts;
+    featureProducts.forEach((feature) {
+      precacheImage(NetworkImage(feature.thumbnail_img.first), context);
+    });
+    categoryList.forEach((category) {
+      precacheImage(NetworkImage(category.icon), context);
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   final List<Widget> _screens = [
     HomePage(),
     //InboxScreen(isBackButtonExist: false),
@@ -25,6 +62,7 @@ class DashBoardScreen extends StatelessWidget {
             false), //NotificationScreen(isBacButtonExist: false),
     MoreScreen(),
   ];
+
   final GlobalKey<FancyBottomNavBarState> _bottomNavKey = GlobalKey();
 
   @override

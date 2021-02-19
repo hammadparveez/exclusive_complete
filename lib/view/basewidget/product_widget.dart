@@ -14,7 +14,10 @@ class ProductWidget extends StatelessWidget {
   final bool isRelatedProducts;
   final WordPressProductModel wordPressProductModel;
   final Product productModel;
-  ProductWidget({@required this.productModel, this.wordPressProductModel, this.isRelatedProducts= false});
+  ProductWidget(
+      {@required this.productModel,
+      this.wordPressProductModel,
+      this.isRelatedProducts = false});
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +65,8 @@ class ProductWidget extends StatelessWidget {
                                 topRight: Radius.circular(10)),
                           ),
                           child: Hero(
-                            tag: "${AppConstants.TAG_THUMBNAIL_IMG}${wordPressProductModel.id}",
+                            tag:
+                                "${AppConstants.TAG_THUMBNAIL_IMG}${wordPressProductModel.id}",
                             child: CachedNetworkImage(
                               placeholder: (_, str) {
                                 return Shimmer.fromColors(
@@ -72,13 +76,17 @@ class ProductWidget extends StatelessWidget {
                                   highlightColor: Colors.grey[100],
                                 );
                               },
-                              imageUrl: !isRelatedProducts ? wordPressProductModel
-                                      .thumbnail_img.isNotEmpty
-                                  ? "${wordPressProductModel.thumbnail_img.first}"
-                                  : AppConstants.NO_IMAGE_URI
-                              :wordPressProductModel.images.first.shop_catalog != null
-                              ? wordPressProductModel.images.first.shop_catalog
-                                  : wordPressProductModel.images.first.src,
+                              imageUrl: !isRelatedProducts
+                                  ? wordPressProductModel
+                                          .thumbnail_img.isNotEmpty
+                                      ? "${wordPressProductModel.thumbnail_img.first}"
+                                      : AppConstants.NO_IMAGE_URI
+                                  : wordPressProductModel
+                                              .images.first.shop_catalog !=
+                                          null
+                                      ? wordPressProductModel
+                                          .images.first.shop_catalog
+                                      : wordPressProductModel.images.first.src,
                               errorWidget: (_, str, value) {
                                 return Image.asset(
                                   "assets/product_images/not-available.jpg",
@@ -88,7 +96,7 @@ class ProductWidget extends StatelessWidget {
                               fadeInCurve: Curves.bounceInOut,
                               fadeInDuration: Duration.zero,
                               fadeOutDuration: Duration.zero,
-    fit: BoxFit.fitHeight,
+                              fit: BoxFit.fitHeight,
                               //"https://images.pexels.com/photos/1591447/pexels-photo-1591447.jpeg",
                               //fit: BoxFit.cover,
                             ),

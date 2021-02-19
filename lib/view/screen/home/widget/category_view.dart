@@ -84,12 +84,16 @@ class CategoryView extends StatelessWidget {
                                       topLeft: Radius.circular(10),
                                       topRight: Radius.circular(10)),
                                   child: LayoutBuilder(
-                                    builder:(_, constraints) => CachedNetworkImage(
+                                    builder: (_, constraints) =>
+                                        CachedNetworkImage(
                                       imageUrl: categoryProvider
-                                                      .categoryList[index].icon !=
+                                                      .categoryList[index]
+                                                      .icon !=
                                                   null &&
-                                              categoryProvider.categoryList[index]
-                                                  .icon.isNotEmpty
+                                              categoryProvider
+                                                  .categoryList[index]
+                                                  .icon
+                                                  .isNotEmpty
                                           ? categoryProvider
                                               .categoryList[index].icon
                                           : AppConstants.NO_IMAGE_URI,
@@ -97,11 +101,14 @@ class CategoryView extends StatelessWidget {
                                       fadeInCurve: Curves.linear,
                                       filterQuality: FilterQuality.low,
                                       fit: BoxFit.cover,
-                                      placeholder: (_,s) {
+                                      placeholder: (_, s) {
                                         return Shimmer.fromColors(
                                           baseColor: Colors.black38,
                                           highlightColor: Colors.black12,
-                                          child: Container(width: constraints.maxWidth, height: constraints.maxHeight,),
+                                          child: Container(
+                                            width: constraints.maxWidth,
+                                            height: constraints.maxHeight,
+                                          ),
                                         );
                                       },
                                       errorWidget: (_, str, value) {
