@@ -64,29 +64,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         reverseDuration: Duration(milliseconds: 300));
     //After the build
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      showDialog(
-          context: context,
-          builder: (_) {
-            return Material(
-              type: MaterialType.transparency,
-              child: Center(
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  loader.SpinKitCubeGrid(
-                      color: ColorResources.WEB_PRIMARY_COLOR, size: 100),
-                  SizedBox(height: 10),
-                  Text("Please wait a sec...",
-                      style: titilliumSemiBold.copyWith(
-                          color: ColorResources.WHITE)),
-                ]),
-              ),
-            );
-          });
-      //loader.SpinKitFoldingCube(color: ColorResources.PRIMARY_COLOR_BIT_DARK));
-      if (Provider.of<AuthProvider>(context, listen: false).isInvalidAuth) {
-        Provider.of<ProfileProvider>(context, listen: false).getAddressOfUser();
-        await Provider.of<CartProvider>(context, listen: false).getCartData();
-      }
-      Get.back();
 
       //final firebase = FirebaseMessaging();
 
@@ -199,7 +176,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         body: AnimatedBuilder(
             animation: _animationController,
             builder: (_, child) {
-              final scale = 1 - (_animationController.value * 0.7);
+              final scale = 1 - (_animationController.value * 1);
               return Stack(
                 children: [
                   Scaffold(

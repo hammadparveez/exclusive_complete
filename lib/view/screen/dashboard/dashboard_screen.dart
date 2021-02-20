@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sixvalley_ui_kit/provider/auth_provider.dart';
 import 'package:sixvalley_ui_kit/provider/cart_provider.dart';
@@ -28,8 +30,29 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<CartProvider>(context, listen: false).resetCart();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      showDialog(
+          context: context,
+          builder: (_) {
+            return Material(
+              type: MaterialType.transparency,
+              child: Center(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  SpinKitCubeGrid(
+                      color: ColorResources.WEB_PRIMARY_COLOR, size: 100),
+                  SizedBox(height: 10),
+                  Text("Please wait a sec...",
+                      style: titilliumSemiBold.copyWith(
+                          color: ColorResources.WHITE)),
+                ]),
+              ),
+            );
+          });
+      if (Provider.of<AuthProvider>(context, listen: false).isInvalidAuth) {
+        Provider.of<ProfileProvider>(context, listen: false).getAddressOfUser();
+        await Provider.of<CartProvider>(context, listen: false).getCartData();
+      }
+      Get.back();
     });
   }
 

@@ -26,6 +26,7 @@ class ProductWidget extends StatelessWidget {
         Navigator.push(
             context,
             PageRouteBuilder(
+              settings: RouteSettings(arguments: wordPressProductModel),
                 transitionDuration: Duration(milliseconds: 1000),
                 pageBuilder: (context, anim1, anim2) {
                   return ProductDetails(

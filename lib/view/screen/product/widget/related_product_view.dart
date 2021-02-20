@@ -19,54 +19,35 @@ class RelatedProductView extends StatefulWidget {
 
 class _RelatedProductViewState extends State<RelatedProductView> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      /*Provider.of<ProductProvider>(context, listen: false)
-          .initLatestProductList();*/
-     /* Provider.of<WordPressProductProvider>(context, listen: false)
-          .resetRelatedProducts();*/
-     /* Provider.of<WordPressProductProvider>(context, listen: false)
-          .initRelatedProduct(listRelatedItems: widget.relatedItems);*/
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Consumer<WordPressProductProvider>(
       builder: (_, wordPressProvider, child) => Consumer<ProductProvider>(
         builder: (context, prodProvider, child) {
-
-return wordPressProvider.listOfRelatedProducts != null
-    ? wordPressProvider.listOfRelatedProducts.isEmpty ? Text("....") : SizedBox(
-  height: 300,
-      child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: (1 / 1.5),
-              ),
-              itemCount: wordPressProvider.listOfRelatedProducts
-                  .length, //prodProvider.relatedProductList.length,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) {
-                return ProductWidget(
-                  isRelatedProducts : true,
-                  wordPressProductModel:
-                      wordPressProvider.listOfRelatedProducts[index],
-
-                );
-              },
-            ),
-    )
-
-
-    : Center(
-        child: Padding(
-          padding: EdgeInsets.all(10),
-            child:
-                Text("Nothing found")));
+          return wordPressProvider.listOfRelatedProducts != null
+              ? CustomLoader(
+                  isLoading: wordPressProvider.listOfRelatedProducts.isEmpty,
+                  isExpanded: false,
+                  elseWidget: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: (1 / 1.5),
+                    ),
+                    itemCount: wordPressProvider.listOfRelatedProducts
+                        .length, //prodProvider.relatedProductList.length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (BuildContext context, int index) {
+                      return ProductWidget(
+                        isRelatedProducts: true,
+                        wordPressProductModel:
+                            wordPressProvider.listOfRelatedProducts[index],
+                      );
+                    },
+                  ))
+              : Center(
+                  child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text("Nothing found")));
         },
       ),
     );

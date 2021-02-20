@@ -22,6 +22,7 @@ import 'package:sixvalley_ui_kit/provider/order_provider.dart';
 import 'package:sixvalley_ui_kit/provider/payment_type_provider.dart';
 import 'package:sixvalley_ui_kit/provider/product_details_provider.dart';
 import 'package:sixvalley_ui_kit/provider/product_provider.dart';
+import 'package:sixvalley_ui_kit/provider/product_stack_provider.dart';
 import 'package:sixvalley_ui_kit/provider/profile_provider.dart';
 import 'package:sixvalley_ui_kit/provider/search_provider.dart';
 import 'package:sixvalley_ui_kit/provider/seller_provider.dart';
@@ -105,6 +106,7 @@ Future<void> init() async {
   sl.registerFactory(() => SellerProvider(sellerRepo: sl()));
   sl.registerFactory(() => CouponProvider(couponRepo: sl()));
   sl.registerFactory(() => ChatProvider(chatRepo: sl()));
+  sl.registerFactory(() => StackProvider() );
 
   sl.registerFactory(() => NotificationProvider(notificationRepo: sl()));
   sl.registerFactory(

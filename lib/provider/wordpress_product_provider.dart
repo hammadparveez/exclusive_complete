@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart' as get_it;
-import 'package:http/http.dart';
 import 'package:sixvalley_ui_kit/data/model/response/wordpress_product_model.dart';
 import 'package:sixvalley_ui_kit/data/repository/wordpress_products_repo.dart';
 import 'package:sixvalley_ui_kit/utill/app_constants.dart';
@@ -53,13 +52,13 @@ class WordPressProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  WordPressProductModel wordPressProductModelByID;
-  List<WordPressProductModel> listOfRelatedProducts = [];
+  WordPressProductModel _wordPressProductModelByID;
+  List<WordPressProductModel> _listOfRelatedProducts = [];
   List<WordPressProductModel> listOfCategoryProducts = [];
   List<WordPressProductModel> listOfFeaturedProducts = [];
   List<WordPressProductModel> listOfRandomProducts = [];
 
-  List<WordPressProductModel> listOfWpProducts = [];
+  List<WordPressProductModel> listOfWpProducts = [], stackProductList = [];
   WordPressProductModel _wordPressProductModel;
   final wordPressProducts =
       getInstance.get<Future<List<WordPressProductModel>>>();
@@ -72,24 +71,31 @@ class WordPressProductProvider extends ChangeNotifier {
   WordPressProductModel get wordPressProductModel => _wordPressProductModel;
 
   Future<void> initFeaturedProducts() async {
-
     listOfFeaturedProducts = await fetchFeaturedProducts();
     _firstLoading = false;
     notifyListeners();
   }
 
   resetRelatedProducts() {
-    listOfRelatedProducts = [];
+    _listOfRelatedProducts = [];
+    notifyListeners();
+  }
+
+  List<WordPressProductModel> get listOfRelatedProducts =>
+      _listOfRelatedProducts;
+
+  set listOfRelatedProducts(List<WordPressProductModel> value) {
+    _listOfRelatedProducts = value;
     notifyListeners();
   }
 
   initRelatedProduct({List<dynamic> listRelatedItems}) async {
-
-    listOfRelatedProducts =  await wordPressProductRepo.getRelatedProducts(listRelatedItems);
-    print("${listOfRelatedProducts}");
+    _listOfRelatedProducts =
+        await wordPressProductRepo.getRelatedProducts(listRelatedItems);
+    print("Provider Related Length ${_listOfRelatedProducts}");
+    listOfSubRelatedProducts.add(_listOfRelatedProducts);
     notifyListeners();
   }
-
 
   Future<void> initTotalCategoryCounts(String slug) async {
     final int totalCounts =
@@ -119,7 +125,7 @@ class WordPressProductProvider extends ChangeNotifier {
         .initBrandAndCategoryProducts(pageCount, slug);
     print("List Of Categoriez Products ${listOfCategorizedProducts.length}");
 
-  /*  listOfCategorizedProducts.forEach((element) {
+    /*  listOfCategorizedProducts.forEach((element) {
       if (element["variations"].length > 0 && element["in_stock"])
         listOfCategoryProducts.add(WordPressProductModel.fromJson(element));
     });*/
@@ -134,38 +140,49 @@ class WordPressProductProvider extends ChangeNotifier {
   }
 
   resetProduct() {
-    wordPressProductModelByID = null;
+    _wordPressProductModelByID = null;
     notifyListeners();
   }
 
   initDetailProduct({@required int productID}) async {
     _isRequestTimedOut = false;
     _isNoInternet = false;
-    final product =
+    _wordPressProductModelByID =
         await wordPressProductRepo.iniDetailPage(productID).catchError((e) {
       _isNoInternet = true;
-    }).timeout(AppConstants.TIMED_OUT_20, onTimeout: () {
-      _isRequestTimedOut = true;
     });
-    if (!(product is bool))  {
-      wordPressProductModelByID = product;
+    if (_wordPressProductModelByID != null) {
+      stackProductList.add(_wordPressProductModelByID);
     }
     notifyListeners();
   }
+
+  set wordPressProductModelByID(WordPressProductModel value) {
+    _wordPressProductModelByID = value;
+    notifyListeners();
+  }
+
+  List<List<WordPressProductModel>> listOfSubRelatedProducts = [];
+  WordPressProductModel get wordPressProductModelByID =>
+      _wordPressProductModelByID;
 
   WordPressProductModel _getWooCommerceProduct() {}
 
   Future<List<WordPressProductModel>> fetchFeaturedProducts(
       {int limit = 0}) async {
-
     _isNoInternet = false;
     _isRequestTimedOut = false;
     List<WordPressProductModel> listOfWPFeatureProducts = [];
+
     //final perf =  .getInstance();
-    final featureProducts = await wordPressProductRepo.featuredProducts().catchError((error) {
+    final featureProducts =
+        await wordPressProductRepo.featuredProducts().catchError((error) {
       _isNoInternet = true;
       return [];
-    }).timeout(AppConstants.TIMED_OUT_20, onTimeout: () async { _isRequestTimedOut= true; return [];});
+    }).timeout(AppConstants.TIMED_OUT_20, onTimeout: () async {
+      _isRequestTimedOut = true;
+      return [];
+    });
 
     final f = featureProducts;
     f.forEach((element) {

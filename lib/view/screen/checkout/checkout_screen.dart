@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sixvalley_ui_kit/data/model/payment_gateway_model.dart';
@@ -21,6 +22,7 @@ import 'package:sixvalley_ui_kit/utill/images.dart';
 import 'package:sixvalley_ui_kit/utill/string_resources.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/amount_widget.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/custom_app_bar.dart';
+import 'package:sixvalley_ui_kit/view/basewidget/custom_scroll_loader.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/not_loggedin_widget.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/show_custom_snakbar.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/title_row.dart';
@@ -74,8 +76,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         Provider.of<ProfileProvider>(context, listen: false).resetAddressList();
         profileProvider.isAddingAddressLoader = true;
         await profileProvider.getAddressOfUser();
-        Provider.of<OrderProvider>(context, listen: false)
-            .setAddressIndex(0);
+        Provider.of<OrderProvider>(context, listen: false).setAddressIndex(0);
 /*        profileProvider.fetchRegion().then( (value) {
           try {
             if (profileProvider.countryModel != null &&
@@ -105,17 +106,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           }
         });*/
         await profileProvider.fetchPaymentRegion();
-        profileProvider.updateShipping(countryCode: profileProvider.countrySelectedCode);
-        profileProvider.updateShipping(countryCode: profileProvider.countrySelectedCode);
+        profileProvider.updateShipping(
+            countryCode: profileProvider.countrySelectedCode);
+        profileProvider.updateShipping(
+            countryCode: profileProvider.countrySelectedCode);
         print(" One");
       } else {
         print("User is not logged in");
         Provider.of<ProfileProvider>(context, listen: false).clearAddressList();
         Get.to(Scaffold(body: NotLoggedInWidget()));
       }
-
     });
-
   }
 
   @override
@@ -125,8 +126,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return !Provider.of<ProfileProvider>(context).isAddingAddressLoader
-        ? Scaffold(
+    return CustomLoader(
+        isLoading: Provider.of<ProfileProvider>(context).isAddingAddressLoader,
+        isExpanded: false,
+        elseWidget: Scaffold(
             key: _scaffoldKey,
             //resizeToAvoidBottomPadding: true,
             bottomNavigationBar:
@@ -1013,17 +1016,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       }),
                     ],
                   )
-                : Center(child: CircularProgressIndicator()))
-        : Scaffold(
-            body: Center(
-                child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(),
-              const SizedBox(height: 5),
-              Text("Updating... Please Wait!"),
-            ],
-          )));
+                : Center(child: SpinKitFoldingCube())));
   }
 
   Container buildAddressTopbar(BuildContext context) {

@@ -71,7 +71,7 @@ class WordPressProductRepo {
     return wpModel;
   }
 
-  Future iniDetailPage(int productID) async {
+  Future<WordPressProductModel> iniDetailPage(int productID) async {
     final response =
         await get("${AppConstants.PRODUCTS_BY_ID_URI}${productID}", headers: {
       HttpHeaders.authorizationHeader: AppConstants.JWT_ADMIN_TOKEN,
@@ -121,19 +121,21 @@ class WordPressProductRepo {
         editedUrl += "${listRelatedItems[i]},";
     }
 
-    listRelatedItems.forEach((id) async {
-    final response =  await get("${AppConstants.RELATED_PRODUCTS_BY_IDS}$id", headers: {
-      HttpHeaders.authorizationHeader: AppConstants.BASIC_AUTH,
-      HttpHeaders.contentTypeHeader: AppConstants.JSON_CONTENT_TYPE,
-      HttpHeaders.connectionHeader: AppConstants.KEEP_ALIVE,
+    for (int id in listRelatedItems) {
+      print("Looping ${id}");
+      final response =
+          await get("${AppConstants.RELATED_PRODUCTS_BY_IDS}$id", headers: {
+        HttpHeaders.authorizationHeader: AppConstants.BASIC_AUTH,
+        HttpHeaders.contentTypeHeader: AppConstants.JSON_CONTENT_TYPE,
+        HttpHeaders.connectionHeader: AppConstants.KEEP_ALIVE,
       });
+      print("${response.statusCode} Response is: ");
       if (response != null && response.statusCode == 200) {
-        final item = jsonDecode(response.body);
+        final item = await jsonDecode(response.body);
         relatedItems.add(WordPressProductModel.fromJson(item['product']));
       }
-    });
-
-
+    }
+    print("List Of Related ${relatedItems.length} and ${relatedItems}");
 /*    print("${editedUrl}");
     final response = await get(editedUrl, headers: {
       HttpHeaders.authorizationHeader: AppConstants.JWT_ADMIN_TOKEN,

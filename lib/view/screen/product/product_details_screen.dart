@@ -80,83 +80,115 @@ class _ProductDetailsState extends State<ProductDetails> {
       if (feature.thumbnail_img != null)
         precacheImage(NetworkImage(feature.thumbnail_img.first), context);
     });
+    print("Length of Relate ${relatedProducts.length}");
   }
 
   @override
   Widget build(BuildContext context) {
+    final WordPressProductModel _wpModel =
+        ModalRoute.of(context).settings.arguments;
     return Consumer3<ProductDetailsProvider, WordPressProductProvider,
         CartProvider>(
       builder: (context, details, wordPressProvider, cartProvider, child) {
         return
             //wordPressProvider.wordPressProductModelByID != null
-            Scaffold(
-          appBar: AppBar(
-            title: Row(children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back_ios,
-                    color: ColorResources.WHITE, size: 20),
-                onPressed: () => Navigator.pop(context),
-              ),
-              SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
-              Text(Strings.product_details,
-                  style: robotoRegular.copyWith(
-                      color: ColorResources.WHITE, fontSize: 20)),
-            ]),
-            automaticallyImplyLeading: false,
-            elevation: 0,
-            backgroundColor: ColorResources
-                .PRIMARY_COLOR, //ColorResources.WHITE.withOpacity(0.5),
-          ),
-          bottomNavigationBar: BottomCartView(
-              //product: widget.product,
-              wordPressProductModel: model),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                //model.thumbnail_img != null ?
-                ProductImageView(
-                    productModel: model,
-                    wordPressProductModel:
-                        wordPressProvider.wordPressProductModelByID),
+            WillPopScope(
+          onWillPop: () async {
+            if (wordPressProvider.stackProductList.isNotEmpty) {
+              wordPressProvider.stackProductList.removeLast();
+              wordPressProvider.listOfSubRelatedProducts.removeLast();
+              if (wordPressProvider.stackProductList.length > 0) {
+                wordPressProvider.wordPressProductModelByID =
+                    wordPressProvider.stackProductList.last;
+                wordPressProvider.listOfRelatedProducts =
+                    wordPressProvider.listOfSubRelatedProducts.last;
+              }
+            }
+            return true;
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: Row(children: [
+                IconButton(
+                    icon: Icon(Icons.arrow_back_ios,
+                        color: ColorResources.WHITE, size: 20),
+                    onPressed: () {
+                      if (wordPressProvider.stackProductList.isNotEmpty &&
+                          wordPressProvider
+                              .listOfSubRelatedProducts.isNotEmpty) {
+                        wordPressProvider.stackProductList.removeLast();
+                        wordPressProvider.listOfSubRelatedProducts.removeLast();
+                        if (wordPressProvider.stackProductList.length > 0) {
+                          wordPressProvider.wordPressProductModelByID =
+                              wordPressProvider.stackProductList.last;
+                          wordPressProvider.listOfRelatedProducts =
+                              wordPressProvider.listOfSubRelatedProducts.last;
+                        }
+                        Navigator.pop(context);
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    }),
+                SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+                Text(Strings.product_details,
+                    style: robotoRegular.copyWith(
+                        color: ColorResources.WHITE, fontSize: 20)),
+              ]),
+              automaticallyImplyLeading: false,
+              elevation: 0,
+              backgroundColor: ColorResources
+                  .PRIMARY_COLOR, //ColorResources.WHITE.withOpacity(0.5),
+            ),
+            bottomNavigationBar: BottomCartView(
+                //product: widget.product,
+                wordPressProductModel: model),
+            body: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  //model.thumbnail_img != null ?
+                  ProductImageView(
+                      productModel: model,
+                      wordPressProductModel:
+                          wordPressProvider.wordPressProductModelByID),
 
-
-                ProductTitleView(
-                  productModel: widget.product,
-                  wordPressProductModel: model,
-                  /*wordPressProvider.wordPressProductModelByID*/
-                ),
-
-
-                // Specification
-                Container(
-                  margin: EdgeInsets.only(top: Dimensions.PADDING_SIZE_SMALL),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  color: ColorResources.WHITE,
-                  child: ProductSpecification(
-                    productSpecification: model.shortDescription,
-                    //"${wordPressProvider.wordPressProductModelByID.shortDescription}",
-                  ), //productSpecification: product.details ?? ''),
-                ),
-
-                // Related Products
-                Container(
-                  margin: EdgeInsets.only(top: Dimensions.PADDING_SIZE_SMALL),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  color: ColorResources.WHITE,
-                  child: Column(
-                    children: [
-                      TitleRow(
-                          title: Strings.related_products, isDetailsPage: true),
-                      SizedBox(height: 5),
-                      RelatedProductView(
-                          relatedItems: model.related_ids,
-                          //wordPressProvider.wordPressProductModelByID.related_ids,
-                          productType: "Dummy"),
-                    ],
+                  ProductTitleView(
+                    productModel: widget.product,
+                    wordPressProductModel: model,
+                    /*wordPressProvider.wordPressProductModelByID*/
                   ),
-                ),
-              ],
+
+                  // Specification
+                  Container(
+                    margin: EdgeInsets.only(top: Dimensions.PADDING_SIZE_SMALL),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    color: ColorResources.WHITE,
+                    child: ProductSpecification(
+                      productSpecification: model.shortDescription,
+                      //"${wordPressProvider.wordPressProductModelByID.shortDescription}",
+                    ), //productSpecification: product.details ?? ''),
+                  ),
+
+                  // Related Products
+                  Container(
+                    margin: EdgeInsets.only(top: Dimensions.PADDING_SIZE_SMALL),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    color: ColorResources.WHITE,
+                    child: Column(
+                      children: [
+                        TitleRow(
+                            title: Strings.related_products,
+                            isDetailsPage: true),
+                        SizedBox(height: 5),
+                        RelatedProductView(
+                            relatedItems: model.related_ids,
+                            //wordPressProvider.wordPressProductModelByID.related_ids,
+                            productType: "Dummy"),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );

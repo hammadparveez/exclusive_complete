@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:get/get.dart';
 import 'package:sixvalley_ui_kit/data/model/response/wordpress_product_model.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/custom_app_bar.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/show_custom_snakbar.dart';
@@ -34,34 +33,42 @@ class _ProductImageScreenState extends State<ProductImageScreen> {
               child: GestureDetector(
                 onTap: () {
                   SystemChrome.setEnabledSystemUIOverlays([]);
-                  showDialog(context: context, builder: (_) =>
-                      InteractiveViewer(
+                  showDialog(
+                    context: context,
+                    builder: (_) => WillPopScope(
+                      onWillPop: () async {
+                        SystemChrome.setEnabledSystemUIOverlays(
+                            SystemUiOverlay.values);
+                        return true;
+                      },
+                      child: InteractiveViewer(
                         maxScale: 4,
                         minScale: 0.5,
                         scaleEnabled: true,
                         child: Container(
-                         // width: Get.width,
+                          // width: Get.width,
                           //height: Get.height,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage(widget.imgModel.src),
-                              fit: BoxFit.cover,
-                              onError: (e, error) {
-                                showCustomSnackBar("Image not available", context);
-                              }
-                            ),
+                                image: NetworkImage(widget.imgModel.src),
+                                fit: BoxFit.cover,
+                                onError: (e, error) {
+                                  showCustomSnackBar(
+                                      "Image not available", context);
+                                }),
                           ),
                         ),
                       ),
+                    ),
                   );
-
                 },
                 child: InteractiveViewer(
                   scaleEnabled: true,
-                  minScale: 0.3,maxScale: 4,
+                  minScale: 0.3,
+                  maxScale: 4,
                   child: CachedNetworkImage(
                     imageUrl: widget.imgModel.src,
-                    placeholder: (_,str) {
+                    placeholder: (_, str) {
                       return SpinKitFadingCircle(color: Colors.transparent);
                     },
                   ),
