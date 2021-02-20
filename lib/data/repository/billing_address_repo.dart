@@ -65,7 +65,7 @@ class BillingAddressRepo {
     );*/
     final jsonData = await http.get(AppConstants.COUNTRIES_API_URI);
     print("${jsonData.body} From JSON Countries and ${jsonData.statusCode}");
-    final json = await jsonDecode(jsonData.body);
+    final json =  jsonDecode(jsonData.body);
     final Map<String, dynamic> listOfCountries = json["country"];
 
     return listOfCountries;

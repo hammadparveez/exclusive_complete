@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sixvalley_ui_kit/data/model/response/address_model.dart';
@@ -48,6 +49,11 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
           Provider.of<ProfileProvider>(context, listen: false).countryModel;
     });
     return Container(
+
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.horizontal(
+              right: Radius.circular(10), left: Radius.circular(10)),
+          color: ColorResources.WHITE),
       padding: EdgeInsets.only(
           left: Dimensions.PADDING_SIZE_DEFAULT,
           right: Dimensions.PADDING_SIZE_DEFAULT,
@@ -130,6 +136,12 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                   isValidator: true,
                   validatorMessage: Strings.ADDRESS_FIELD_MUST_BE_REQUIRED,
                   textInputAction: TextInputAction.next,
+                  doValidate: (value) {
+                    if (value.isEmpty)
+                      return "Address required";
+                    else if (value.length < 3) return "Enter a correct address";
+                    return null;
+                  },
                 ),
                 Divider(thickness: 0.7, color: ColorResources.GREY),
                 CustomTextField(
@@ -153,6 +165,13 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                   validatorMessage: Strings.CITY_FIELD_MUST_BE_REQUIRED,
                   nextNode: _zipCodeFocus,
                   textInputAction: TextInputAction.next,
+                  doValidate: (value) {
+                    if (value.isEmpty)
+                      return "City is required";
+                    else if (!value.isAlphabetOnly || value.length < 3)
+                      return "Enter a valid City name";
+                    return null;
+                  },
                 ),
                 Divider(thickness: 0.7, color: ColorResources.GREY),
                 CustomTextField(
@@ -165,11 +184,50 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                   nextNode: _countryFocus,
                   validatorMessage: Strings.ZIPCODE_FIELD_MUST_BE_REQUIRED,
                   textInputAction: TextInputAction.done,
+                  doValidate: (value) {
+                    if (value.isEmpty)
+                      return "Zip code is required";
+                    else if (value.length < 4 || value.length > 6)
+                      return "Enter a valid Zip Code";
+                    return null;
+                  },
+                ),
+                Divider(thickness: 0.7, color: ColorResources.GREY),
+                CustomTextField(
+                  hintText: Strings.ENTER_YOUR_STATE,
+                  controller: _stateController,
+                  textInputType: TextInputType.streetAddress,
+                  focusNode: _stateFocus,
+                  isValidator: true,
+                  validatorMessage:
+                      "Enter A State", //Strings.CITY_FIELD_MUST_BE_REQUIRED,
+                  nextNode: _phone,
+                  textInputAction: TextInputAction.next,
+                  doValidate: (value) {
+                    if (value.isEmpty)
+                      return "State is required";
+                    else if (value.length < 3 || !value.isAlphabetOnly)
+                      return "Enter a valid State";
+                    return null;
+                  },
                 ),
                 Divider(thickness: 0.7, color: ColorResources.GREY),
                 Consumer<ProfileProvider>(builder: (_, profileProvider, child) {
                   String selectedRegion;
                   return DropdownButtonFormField(
+                    validator: (value) {
+                      print("Value $value");
+                      if (value.length > 3)
+                        return "Region must be selected";
+                      else if (value.length < 0)
+                        return "Country must be selected";
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: ColorResources.PRIMARY_COLOR_BIT_DARK)),
+                    ),
                     items: profileProvider.countryModel != null
                         ? profileProvider.countryModel.keys
                             .map<DropdownMenuItem>((e) => DropdownMenuItem(
@@ -195,27 +253,20 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                     hint: Text("Select Your Region"),
                   );
                 }),
-
-                Divider(thickness: 0.7, color: ColorResources.GREY),
-                CustomTextField(
-                  hintText: Strings.ENTER_YOUR_STATE,
-                  controller: _stateController,
-                  textInputType: TextInputType.streetAddress,
-                  focusNode: _stateFocus,
-                  isValidator: true,
-                  validatorMessage:
-                      "Enter A State", //Strings.CITY_FIELD_MUST_BE_REQUIRED,
-                  nextNode: _phone,
-                  textInputAction: TextInputAction.next,
-                ),
                 Divider(thickness: 0.7, color: ColorResources.GREY),
                 CustomTextField(
                   hintText: Strings.ENTER_MOBILE_NUMBER,
                   controller: _phoneController,
                   textInputType: TextInputType.number,
                   focusNode: _phone,
-                  isValidator: true, isPhoneNumber: true,
-
+                  isValidator: true,
+                  isPhoneNumber: true,
+                  doValidate: (value) {
+                    if ((value.length < 8))
+                      return "Enter a valid phone number";
+                    else if (value.isEmpty) return "Phone number required";
+                    return null;
+                  },
                   validatorMessage:
                       "Enter A Phone Number", //Strings.CITY_FIELD_MUST_BE_REQUIRED,
 
@@ -280,7 +331,7 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
+                    SpinKitThreeBounce(color: ColorResources.WEB_PRIMARY_COLOR),
                     const SizedBox(height: 10),
                     Text("Updating address",
                         style: titilliumSemiBold.copyWith(

@@ -191,7 +191,6 @@ class ProfileProvider extends ChangeNotifier {
   Future<void> updateShipping({String countryCode}) async {
     shippingUpdateModel =
         await profileRepo.updateShipping(countryCode: countryCode);
-    print("Get Shipping Update ${shippingUpdateModel} and ${countryCode}");
     _isShippingLoaded = false;
     notifyListeners();
   }
@@ -289,9 +288,19 @@ class ProfileProvider extends ChangeNotifier {
         if (address != null &&
             address.address_1.isNotEmpty &&
             address.country.isNotEmpty) {
-          _addressList.add(address);
-          _isAddressLoading = false;
-          _isAddressExists = true;
+          try {
+            countryModel = await billingAddressRepo.getRegions();
+            _countrySelectedCode =
+                countryModel.keys.firstWhere((key) => countryModel[key] ==
+                    address.country);
+            print("${_countrySelectedCode}");
+          }finally {
+            _addressList.add(address);
+            _isAddressLoading = false;
+            _isAddingAddressLoader = false;
+
+            _isAddressExists = true;
+          }
         } else {
           _isAddressExists = false;
         }

@@ -180,6 +180,13 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       nextNode: _lNameFocus,
                       isPhoneNumber: false,
                       controller: _firstNameController,
+                          doValidate: (value) {
+                        if(value.length < 3)
+                          return "FirstName must be 3 character long";
+                        else if(!value.isAlphabetOnly)
+                          return "FirstName must container only letters";
+                        return null;
+                          },
                     )),
                     SizedBox(width: 15),
                     Expanded(
@@ -188,6 +195,13 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       focusNode: _lNameFocus,
                       nextNode: _emailFocus,
                       controller: _lastNameController,
+                          doValidate: (value) {
+                            if(value.length < 3)
+                              return "LastName must be 3 character long";
+                            else if(!value.isAlphabetOnly)
+                              return "LastName must container only letters";
+                            return null;
+                          },
                     )),
                   ],
                 ),
@@ -257,6 +271,14 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   focusNode: _passwordFocus,
                   nextNode: _confirmPasswordFocus,
                   textInputAction: TextInputAction.next,
+                  validate: (value) {
+                    if(value.isEmpty)
+                      return "Password is required";
+                    else if(value.length < 8)
+                      return "Password must be at least 8 character long";
+                    else
+                      return null;
+                  },
                 ),
               ),
 
@@ -271,6 +293,13 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   controller: _confirmPasswordController,
                   focusNode: _confirmPasswordFocus,
                   textInputAction: TextInputAction.done,
+                  validate: (value) {
+                    if(value.isEmpty)
+                      return "Confirm Password is required";
+                    else if(value != _passwordController.text)
+                      return "Password must match";
+                    return null;
+                  },
                 ),
               ),
             ],

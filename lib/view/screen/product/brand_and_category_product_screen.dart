@@ -143,11 +143,6 @@ class _BrandAndCategoryProductScreenState
                           child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                /*Image.network(
-                                  "https://image.freepik.com/free-vector/shining-circle-purple-lighting-isolated-dark-background_1441-2396.jpg",
-                                  width: 80,
-                                  height: 80,
-                                ),*/
                                 SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
                                 Text(widget.category.name,
                                     style: titilliumSemiBold.copyWith(
@@ -160,10 +155,8 @@ class _BrandAndCategoryProductScreenState
 
                   // Products
                   //productProvider.brandOrCategoryProductList.length > 0
-                  wordPressProvider.listOfCategoryProducts.length > 0 //&&
-                      /*  (wordPressProvider.listOfCategoryProducts.length <
-                              wordPressProvider.categoryTotalCount)*/
-                      ? Expanded(
+                  CustomLoader(isLoading: wordPressProvider.listOfCategoryProducts.isEmpty,
+                      elseWidget: Expanded(
                           child: GridView.builder(
                             padding: EdgeInsets.symmetric(
                                 horizontal: Dimensions.PADDING_SIZE_SMALL),
@@ -175,52 +168,16 @@ class _BrandAndCategoryProductScreenState
                             ),
                             itemCount:
                                 wordPressProvider.listOfCategoryProducts.length,
-                            //wordPressProvider.listOfCategoryProducts.length,
-                            /*productProvider
-                                .brandOrCategoryProductList.length,*/
                             shrinkWrap: true,
                             controller: _scrollController,
                             itemBuilder: (BuildContext context, int index) {
-                              /* print(
-                                  "Hello ${productProvider.brandOrCategoryProductList[index]}");*/
-                              /*Container(
-                                  child: Image.network(
-                                      "${productProvider.brandOrCategoryProductList[index].images[0]["thumbnail"]}"));*/
                               return ProductWidget(
                                 wordPressProductModel: wordPressProvider
                                     .listOfCategoryProducts[index],
-                                /* wpProductModel: productProvider
-                                      .brandOrCategoryProductList[index]*/
                               );
-                              /*ProductWidget(
-                                wpProductModel: productProvider
-                                    .brandOrCategoryProductList[index],
-                                */ /*  productModel: productProvider
-                                      .brandOrCategoryProductList[index]*/ /*
-                              );*/
                             },
                           ),
-                        )
-                      : wordPressProvider.listOfRelatedProducts.length == 0
-                          ? Expanded(
-                              child: Center(
-                              child: wordPressProvider
-                                          .listOfRelatedProducts.length ==
-                                      0
-                                  ? CircularProgressIndicator()
-                                  : NoInternetOrDataScreen(
-                                      isNoInternet:
-                                          false), //productProvider.hasData
-                              /*  ? ProductShimmer(
-                                  isEnabled:
-                                      Provider.of<ProductProvider>(context)
-                                              .brandOrCategoryProductList
-                                              .length ==
-                                          0) */
-                            ))
-                          : Expanded(
-                              child: Center(
-                                  child: ProductShimmer(isEnabled: true))),
+                        ) ),
                   CustomScrollLoader(isLoading: wordPressProvider.isLoadingMore)
                 ]);
           },

@@ -112,6 +112,7 @@ class WordPressProductRepo {
 
   Future<List<WordPressProductModel>> getRelatedProducts(
       List listRelatedItems) async {
+    final List<WordPressProductModel> relatedItems = [];
     String editedUrl = "${AppConstants.RELATED_PRODUCTS_BY_ID_URI}";
     for (int i = 0; i < listRelatedItems.length; i++) {
       if (i == listRelatedItems.length - 1)
@@ -119,7 +120,21 @@ class WordPressProductRepo {
       else
         editedUrl += "${listRelatedItems[i]},";
     }
-    print("${editedUrl}");
+
+    listRelatedItems.forEach((id) async {
+    final response =  await get("${AppConstants.RELATED_PRODUCTS_BY_IDS}$id", headers: {
+      HttpHeaders.authorizationHeader: AppConstants.BASIC_AUTH,
+      HttpHeaders.contentTypeHeader: AppConstants.JSON_CONTENT_TYPE,
+      HttpHeaders.connectionHeader: AppConstants.KEEP_ALIVE,
+      });
+      if (response != null && response.statusCode == 200) {
+        final item = jsonDecode(response.body);
+        relatedItems.add(WordPressProductModel.fromJson(item['product']));
+      }
+    });
+
+
+/*    print("${editedUrl}");
     final response = await get(editedUrl, headers: {
       HttpHeaders.authorizationHeader: AppConstants.JWT_ADMIN_TOKEN,
       HttpHeaders.contentTypeHeader: AppConstants.JSON_CONTENT_TYPE,
@@ -136,7 +151,8 @@ class WordPressProductRepo {
           items.map((e) => WordPressProductModel.fromJson(e)).toList();
       return convertedData;
     } else
-      return null;
+      return null;*/
+    return relatedItems;
   }
 
   //Decoding FeaturePrducts

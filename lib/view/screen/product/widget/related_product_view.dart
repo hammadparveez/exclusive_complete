@@ -25,8 +25,8 @@ class _RelatedProductViewState extends State<RelatedProductView> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       /*Provider.of<ProductProvider>(context, listen: false)
           .initLatestProductList();*/
-      Provider.of<WordPressProductProvider>(context, listen: false)
-          .resetRelatedProducts();
+     /* Provider.of<WordPressProductProvider>(context, listen: false)
+          .resetRelatedProducts();*/
      /* Provider.of<WordPressProductProvider>(context, listen: false)
           .initRelatedProduct(listRelatedItems: widget.relatedItems);*/
     });
@@ -38,40 +38,35 @@ class _RelatedProductViewState extends State<RelatedProductView> {
       builder: (_, wordPressProvider, child) => Consumer<ProductProvider>(
         builder: (context, prodProvider, child) {
 
-          return Column(children: [
+return wordPressProvider.listOfRelatedProducts != null
+    ? wordPressProvider.listOfRelatedProducts.isEmpty ? Text("....") : SizedBox(
+  height: 300,
+      child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: (1 / 1.5),
+              ),
+              itemCount: wordPressProvider.listOfRelatedProducts
+                  .length, //prodProvider.relatedProductList.length,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                return ProductWidget(
+                  isRelatedProducts : true,
+                  wordPressProductModel:
+                      wordPressProvider.listOfRelatedProducts[index],
 
-            wordPressProvider.listOfRelatedProducts != null
-                ?CustomLoader(
-              isLoading: wordPressProvider.listOfRelatedProducts.isEmpty, elseWidget: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: (1 / 1.5),
-                        ),
-                        itemCount: wordPressProvider.listOfRelatedProducts
-                            .length, //prodProvider.relatedProductList.length,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (BuildContext context, int index) {
-                          return ProductWidget(
-                            isRelatedProducts : true,
-                            wordPressProductModel:
-                                wordPressProvider.listOfRelatedProducts[index],
-                            /* productModel:
-                                  prodProvider.relatedProductList[index]*/
-                          );
-                        },
-                      ),
+                );
+              },
+            ),
+    )
 
-            )
-                : Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(10),
-                        child:
-                            Text("Nothing found"))) /*ProductShimmer(
-                    isEnabled: Provider.of<ProductProvider>(context)
-                            .relatedProductList ==
-                        null),*/
-          ]);
+
+    : Center(
+        child: Padding(
+          padding: EdgeInsets.all(10),
+            child:
+                Text("Nothing found")));
         },
       ),
     );

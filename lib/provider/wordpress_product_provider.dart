@@ -86,7 +86,7 @@ class WordPressProductProvider extends ChangeNotifier {
   initRelatedProduct({List<dynamic> listRelatedItems}) async {
 
     listOfRelatedProducts =  await wordPressProductRepo.getRelatedProducts(listRelatedItems);
-
+    print("${listOfRelatedProducts}");
     notifyListeners();
   }
 

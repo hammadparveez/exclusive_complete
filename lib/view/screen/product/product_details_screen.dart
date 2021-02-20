@@ -111,7 +111,6 @@ class _ProductDetailsState extends State<ProductDetails> {
               //product: widget.product,
               wordPressProductModel: model),
           body: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -120,17 +119,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     productModel: model,
                     wordPressProductModel:
                         wordPressProvider.wordPressProductModelByID),
-                /*Shimmer.fromColors(
-                    baseColor: Colors.grey[300],
-                        highlightColor: Colors.grey[100],
-                        enabled: true,
-                        child: Container(
-                          height: Get.height/3.5,
-                          width:  Get.width /1.5,
-                          decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: ColorResources.WHITE),
-                        )),*/
+
 
                 ProductTitleView(
                   productModel: widget.product,
@@ -138,18 +127,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                   /*wordPressProvider.wordPressProductModelByID*/
                 ),
 
-                // Coupon
-                /*Container(
-                  margin: EdgeInsets.only(top: Dimensions.PADDING_SIZE_SMALL),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  color: ColorResources.WHITE,
-                  child: CouponView(),
-                ),*/
-
-                // Seller
-                /* product.addedBy == 'seller'
-                    ? SellerView(sellerId: product.userId)
-                    : SizedBox.shrink(),*/
 
                 // Specification
                 Container(

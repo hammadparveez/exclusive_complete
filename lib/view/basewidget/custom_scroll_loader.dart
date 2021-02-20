@@ -34,12 +34,26 @@ class CustomScrollLoader extends StatelessWidget {
 class CustomLoader extends StatelessWidget {
   final bool isLoading;
   final Widget elseWidget;
-
-  const CustomLoader({Key key, this.isLoading = false, this.elseWidget}) : super(key: key);
+  final bool isExpanded;
+  const CustomLoader({Key key, this.isLoading = false, this.elseWidget, this.isExpanded = true}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     if(isLoading)
-      return Center(
+      return isExpanded ? Expanded(
+        child: Center(
+          child:  Material(
+            type: MaterialType.transparency,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SpinKitThreeBounce(color: ColorResources.WEB_PRIMARY_COLOR, size: 40),
+                const SizedBox(height: 4),
+              ],
+            ),
+          ),
+        ),
+      )
+          : Center(
         child:  Material(
           type: MaterialType.transparency,
           child: Column(

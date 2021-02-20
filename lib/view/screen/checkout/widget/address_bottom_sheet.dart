@@ -179,6 +179,7 @@ class AddressBottomSheet extends StatelessWidget {
                     Navigator.pop(context);
                     showModalBottomSheet(
                       context: context,
+                      backgroundColor: Colors.transparent,
                       isScrollControlled: true,
                       builder: (context) => AddAddressBottomSheet(),
                     );

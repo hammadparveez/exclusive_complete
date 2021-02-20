@@ -10,6 +10,7 @@ import 'package:sixvalley_ui_kit/utill/custom_themes.dart';
 import 'package:sixvalley_ui_kit/utill/dimensions.dart';
 import 'package:sixvalley_ui_kit/utill/string_resources.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/custom_app_bar.dart';
+import 'package:sixvalley_ui_kit/view/basewidget/custom_scroll_loader.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/no_internet_screen.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/not_loggedin_widget.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/show_custom_snakbar.dart';
@@ -221,8 +222,8 @@ class _CartScreenState extends State<CartScreen> {
                 isBackButtonExist: widget.isBackButtonExist),
             !authProvider.isInvalidAuth
                 ? NotLoggedInWidget()
-                : !cartProvider.isLoading
-                    ? cartProvider.cartList.length != 0
+                : CustomLoader(isLoading: cartProvider.isLoading, elseWidget:
+                     cartProvider.cartList.length != 0
                         ? Consumer<CartProvider>(
                             builder: (context, carProvider, child) {
                               print(
@@ -304,8 +305,7 @@ class _CartScreenState extends State<CartScreen> {
                   )*/
                         : Expanded(
                             child: NoInternetOrDataScreen(isNoInternet: false))
-                    : Expanded(
-                        child: Center(child: CircularProgressIndicator())),
+              ),
           ]);
         }),
       ),

@@ -8,8 +8,8 @@ class CustomPasswordTextField extends StatefulWidget {
   final FocusNode focusNode;
   final FocusNode nextNode;
   final TextInputAction textInputAction;
-
-  CustomPasswordTextField({this.controller, this.hintTxt, this.focusNode, this.nextNode, this.textInputAction});
+  final Function(String) validate;
+  CustomPasswordTextField({this.controller, this.hintTxt, this.focusNode, this.nextNode, this.textInputAction, this.validate});
 
   @override
   _CustomPasswordTextFieldState createState() => _CustomPasswordTextFieldState();
@@ -50,14 +50,7 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
                 : FocusScope.of(context).requestFocus(widget.nextNode);
           });
         },
-        validator: (value) {
-          if(value.isEmpty)
-            return "Password is required";
-          else if(value.length < 8)
-            return "Password must be at least 8 character long";
-          else
-          return null;
-        },
+        validator: widget.validate,
         decoration: InputDecoration(
 
             suffixIcon: IconButton(icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off), onPressed: _toggle),

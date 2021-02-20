@@ -11,6 +11,7 @@ import 'package:sixvalley_ui_kit/utill/custom_themes.dart';
 import 'package:sixvalley_ui_kit/utill/dimensions.dart';
 import 'package:sixvalley_ui_kit/utill/string_resources.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/custom_app_bar.dart';
+import 'package:sixvalley_ui_kit/view/basewidget/custom_scroll_loader.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/not_loggedin_widget.dart';
 import 'package:sixvalley_ui_kit/view/screen/order/widget/order_widget.dart';
 
@@ -247,8 +248,8 @@ class _OrderScreenState extends State<OrderScreen> {
                       : SizedBox(),
               !authProvider.isInvalidAuth
                   ? NotLoggedInWidget()
-                  : !orderProvider.isLoading
-                      ? Provider.of<OrderProvider>(context, listen: false)
+                  : CustomLoader(isLoading: orderProvider.isLoading,
+                      elseWidget: Provider.of<OrderProvider>(context, listen: false)
                                   .pendingList !=
                               null
                           ? Consumer<OrderProvider>(
@@ -299,8 +300,9 @@ class _OrderScreenState extends State<OrderScreen> {
                               },
                             )
                           : Expanded(child: OrderShimmer())
-                      : Expanded(
-                          child: Center(child: CircularProgressIndicator())),
+        ),
+         /*             : Expanded(
+                          child: Center(child: CircularProgressIndicator())),*/
               orderProvider.isLoadingOnScroll
                   ? SizedBox(
                       height: 50,

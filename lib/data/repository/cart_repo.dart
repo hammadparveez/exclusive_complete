@@ -36,7 +36,7 @@ class CartRepo {
       print("Token Bearer $bearer");
       final response = await get(
           "https://www.exclusiveinn.com/wp-json/wc/store/cart/",
-          headers: {HttpHeaders.authorizationHeader: bearer});
+          headers: {HttpHeaders.authorizationHeader: bearer, HttpHeaders.contentTypeHeader: AppConstants.JSON_CONTENT_TYPE, HttpHeaders.connectionHeader: AppConstants.KEEP_ALIVE,});
       final jsonData = await jsonDecode(response.body);
       print("Json Body :${response.body}");
       final shippingModel = ShippingUpdateModel.fromMap(jsonData);

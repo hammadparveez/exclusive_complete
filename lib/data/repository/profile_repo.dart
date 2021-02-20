@@ -15,7 +15,8 @@ import 'package:sixvalley_ui_kit/utill/app_constants.dart';
 
 class ProfileRepo {
   final SharedPreferences sharedPreferences;
-  ProfileRepo({@required this.sharedPreferences});
+  final CustomerRepo customerRepo;
+  ProfileRepo({@required this.sharedPreferences, this.customerRepo});
 
   List<String> getAddressTypeList() {
     List<String> addressTypeList = [
@@ -31,7 +32,7 @@ class ProfileRepo {
     if (sharedPreferences.containsKey(AppConstants.WP_USER_ID)) {
       final userID = sharedPreferences.get(AppConstants.WP_USER_ID);
       final WordPressCustomerModel model =
-          await CustomerRepo().fetchCustomerInfo(userID);
+          await customerRepo.fetchCustomerInfo(userID);
       if (model != null) return model.billingAddressModel;
     }
     return null;
@@ -148,7 +149,7 @@ class ProfileRepo {
         headers: {HttpHeaders.authorizationHeader: bearer});
     print("PaymentGateways: ${response.body}");
     if (response.statusCode == 201 || response.statusCode == 200) {
-      final json = await jsonDecode(response.body);
+      final json =  jsonDecode(response.body);
       print("Decode Payments $json");
       final jsonAsList = json as List;
       jsonAsList.forEach((element) {

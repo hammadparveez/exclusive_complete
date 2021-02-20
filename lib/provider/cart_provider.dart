@@ -50,7 +50,6 @@ class CartProvider extends ChangeNotifier {
       _isSelectAll = true;
 
       final c = await cartRepo.getCartList();
-      _totalItemsInCart = c.length;
       c.forEach((element) {
         print("Cart Item Keys: ${element.itemKey}");
       });

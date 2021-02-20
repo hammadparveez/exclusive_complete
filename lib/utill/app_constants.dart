@@ -99,6 +99,7 @@ class AppConstants {
   static const PRODUCTS_BY_ID_URI =
       "https://www.exclusiveinn.com/wp-json/wc/v3/products/";
   //"https://www.exclusiveinn.com/wc-api/v3/products/";
+  static const RELATED_PRODUCTS_BY_IDS = "https://www.exclusiveinn.com/wc-api/v3/products/";
   // "https://www.exclusiveinn.com/wp-json/wc/store/products/";
   static const CATEGORY_COUNT_URI =
       "https://www.exclusiveinn.com/wc-api/v3/products/count?filter[category]=";
@@ -184,7 +185,7 @@ class AppConstants {
   static const WP_ORDER_URI =
       "https://www.exclusiveinn.com/wp-json/wc/v3/orders?customer=";
   static const WP_ORDER_PAGE = "&page=";
-
+  static const BASIC_AUTH = "Basic Y2tfM2Y5MTcwMGZhMTQ4YTMxYmVjMWU1MzZlYTEwNWJlMGFlZWE2NjRhYzpjc183M2U0ODZkZDU1YjBhNDE1NDY3ZDcyZmY2MjgxYmRiMDNiNzVmNjBk";
   static const Map<String, String> WP_AUTH_HEADER = {
     HttpHeaders.authorizationHeader:
         //"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvd3d3LmV4Y2x1c2l2ZWlubi5jb20iLCJpYXQiOjE2MTIyNTI2NzMsIm5iZiI6MTYxMjI1MjY3MywiZXhwIjoxNjEyODU3NDczLCJkYXRhIjp7InVzZXIiOnsiaWQiOiIxIn19fQ.lVPW24IkvDNLIEiWpMN7X6EUOKcFmd-q86HTnFOUBfU",

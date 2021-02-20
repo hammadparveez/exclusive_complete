@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sixvalley_ui_kit/data/model/response/wordpress_product_model.dart';
 import 'package:sixvalley_ui_kit/provider/search_provider.dart';
 import 'package:sixvalley_ui_kit/utill/dimensions.dart';
+import 'package:sixvalley_ui_kit/view/basewidget/custom_scroll_loader.dart';
 import 'package:sixvalley_ui_kit/view/basewidget/product_widget.dart';
 
 class SearchProductWidget extends StatefulWidget {
@@ -77,12 +78,7 @@ class _SearchProductWidgetState extends State<SearchProductWidget> {
                       },
                     ),
                   ),
-                  searchProvider.onScrollLoader
-                      ? const Padding(
-                          padding: EdgeInsets.all(8),
-                          child: CircularProgressIndicator(),
-                        )
-                      : const SizedBox.shrink(),
+                 CustomScrollLoader(isLoading: searchProvider.onScrollLoader),
                 ],
               ),
             ),

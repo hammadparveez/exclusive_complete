@@ -76,17 +76,12 @@ class ProductWidget extends StatelessWidget {
                                   highlightColor: Colors.grey[100],
                                 );
                               },
-                              imageUrl: !isRelatedProducts
-                                  ? wordPressProductModel
+                              imageUrl:  wordPressProductModel.thumbnail_img != null && wordPressProductModel
                                           .thumbnail_img.isNotEmpty
                                       ? "${wordPressProductModel.thumbnail_img.first}"
-                                      : AppConstants.NO_IMAGE_URI
-                                  : wordPressProductModel
-                                              .images.first.shop_catalog !=
-                                          null
-                                      ? wordPressProductModel
-                                          .images.first.shop_catalog
-                                      : wordPressProductModel.images.first.src,
+                                      : AppConstants.NO_IMAGE_URI,
+
+
                               errorWidget: (_, str, value) {
                                 return Image.asset(
                                   "assets/product_images/not-available.jpg",

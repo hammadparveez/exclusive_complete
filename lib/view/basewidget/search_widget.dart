@@ -49,9 +49,11 @@ class SearchWidget extends StatelessWidget {
                 autofocus: true,
                 controller: _controller,
                 onFieldSubmitted: (query) {
+                  Provider.of<SearchProvider>(context, listen: false).loadingProducts();
                   onSubmit(query);
                 },
                 onChanged: (query) {
+
                   onTextChanged(query);
                 },
                 textInputAction: TextInputAction.search,
@@ -68,9 +70,10 @@ class SearchWidget extends StatelessWidget {
                           .searchText
                           .isNotEmpty
                       ? IconButton(
-                          icon: Icon(Icons.clear, color: ColorResources.GREY),
+                          icon: Icon(Icons.arrow_forward, color: ColorResources.WEB_PRIMARY_COLOR),
                           onPressed: () {
-                            onClearPressed();
+                            onSubmit(_controller.text);
+                            //onClearPressed();
                             _controller.clear();
                           },
                         )

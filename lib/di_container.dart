@@ -60,6 +60,7 @@ Future<void> init() async {
   // Repository
   sl.registerLazySingleton(
       () => CategoryRepo(preferences: sl(), wordPressMainMenuRepo: sl()));
+  sl.registerLazySingleton(() => CustomerRepo());
   sl.registerLazySingleton(() => MegaDealRepo());
   sl.registerLazySingleton(() => WordPressMainMenuRepo());
   sl.registerLazySingleton(() => BrandRepo());
@@ -74,7 +75,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => CouponRepo());
   sl.registerLazySingleton(() => ChatRepo());
   sl.registerLazySingleton(() => NotificationRepo());
-  sl.registerLazySingleton(() => ProfileRepo(sharedPreferences: sl()));
+  sl.registerLazySingleton(() => ProfileRepo(sharedPreferences: sl(), customerRepo: sl()));
   sl.registerLazySingleton(() => WishListRepo());
   sl.registerLazySingleton(() => InternetCheckRepo());
   sl.registerLazySingleton(() => CartRepo(sharedPreferences: sl()));

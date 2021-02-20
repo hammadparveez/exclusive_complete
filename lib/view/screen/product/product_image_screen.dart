@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:sixvalley_ui_kit/data/model/response/wordpress_product_model.dart';
@@ -32,6 +33,7 @@ class _ProductImageScreenState extends State<ProductImageScreen> {
               tag: 'image-view',
               child: GestureDetector(
                 onTap: () {
+                  SystemChrome.setEnabledSystemUIOverlays([]);
                   showDialog(context: context, builder: (_) =>
                       InteractiveViewer(
                         maxScale: 4,

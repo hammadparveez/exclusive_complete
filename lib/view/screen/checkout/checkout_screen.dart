@@ -71,67 +71,56 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       if (authProvider.isInvalidAuth) {
         final profileProvider =
             Provider.of<ProfileProvider>(context, listen: false);
-
-        print("User is now fully logged in");
         Provider.of<ProfileProvider>(context, listen: false).resetAddressList();
         profileProvider.isAddingAddressLoader = true;
         await profileProvider.getAddressOfUser();
-        await profileProvider.fetchPaymentRegion();
-        await profileProvider.fetchRegion();
-        print("Addres inside Checkout ${profileProvider.addressList.length}");
+        Provider.of<OrderProvider>(context, listen: false)
+            .setAddressIndex(0);
+/*        profileProvider.fetchRegion().then( (value) {
+          try {
+            if (profileProvider.countryModel != null &&
+                profileProvider.countryModel is Map) {
+              countryCode = profileProvider.countryModel.keys.firstWhere((key) {
+                if (profileProvider.addressList.first.country ==
+                    profileProvider.countryModel[key]) {
+                  return true;
+                } else {
+                  return false;
+                }
+              });
+            }
+            profileProvider.countrySelectedCode = countryCode;
+            profileProvider.updateShipping(countryCode: countryCode);
+            profileProvider.updateShipping(countryCode: countryCode);
+            if (profileProvider.addressList.length > 0 &&
+                profileProvider.addressList.first.address_1.isNotEmpty)
 
-        try {
-          print(
-              "Countryies Models ${profileProvider.countryModel} my countrry ");
-          if (profileProvider.countryModel != null &&
-              profileProvider.countryModel is Map) {
-            countryCode = profileProvider.countryModel.keys.firstWhere((key) {
-              print("${key}");
-
-              if (profileProvider.addressList.first.country ==
-                  profileProvider.countryModel[key]) {
-                print("Country Found $key");
-                return true;
-              } else {
-                print("Not Found Value");
-                return false;
-              }
-            });
+            print(
+                "Sheeply Model  ${profileProvider.shippingUpdateModel.totals.currencyCode}");
+          } catch (error) {
+            print("Country not found ${error}");
+            profileProvider.isShippingLoaded = false;
+          } finally {
+            profileProvider.isAddingAddressLoader = false;
           }
-          profileProvider.countrySelectedCode = countryCode;
-          print("My Country Code is ${countryCode}");
-          // if (profileProvider.addressList.isEmpty)
-          //profileProvider.isShippingLoaded = true;
-          await profileProvider.updateShipping(countryCode: countryCode);
-          await profileProvider.updateShipping(countryCode: countryCode);
-          if (profileProvider.addressList.length > 0 &&
-              profileProvider.addressList.first.address_1.isNotEmpty)
-            Provider.of<OrderProvider>(context, listen: false)
-                .setAddressIndex(0);
-          print(
-              "Sheeply Model  ${profileProvider.shippingUpdateModel.totals.currencyCode}");
-        } catch (error) {
-          print("Country not found ${error}");
-          profileProvider.isShippingLoaded = false;
-        } finally {
-          profileProvider.isAddingAddressLoader = false;
-        }
-        Provider.of<CouponProvider>(context, listen: false)
-            .removePrevCouponData();
+        });*/
+        await profileProvider.fetchPaymentRegion();
+        profileProvider.updateShipping(countryCode: profileProvider.countrySelectedCode);
+        profileProvider.updateShipping(countryCode: profileProvider.countrySelectedCode);
+        print(" One");
       } else {
         print("User is not logged in");
         Provider.of<ProfileProvider>(context, listen: false).clearAddressList();
         Get.to(Scaffold(body: NotLoggedInWidget()));
       }
 
-      //print("BBBBBILLLING Address $billingAddressModel");
     });
 
-    /*  widget.cartList.forEach((cart) {
-      _order = _order + cart.price;
-      _discount = _discount + cart.discount;
-      _tax = _tax + cart.tax;
-    });*/
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
