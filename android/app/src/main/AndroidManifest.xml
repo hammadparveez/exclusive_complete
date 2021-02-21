@@ -11,7 +11,7 @@
     <application
         android:name=".Application"
         android:label="Exclusive Inn"
-        android:icon="@mipmap/logo"
+        android:icon="@mipmap/ic_launcher"
         >
         <activity
             android:name=".MainActivity"

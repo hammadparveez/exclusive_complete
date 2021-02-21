@@ -290,11 +290,10 @@ class ProfileProvider extends ChangeNotifier {
             address.country.isNotEmpty) {
           try {
             countryModel = await billingAddressRepo.getRegions();
-            _countrySelectedCode =
-                countryModel.keys.firstWhere((key) => countryModel[key] ==
-                    address.country);
+            _countrySelectedCode = countryModel.keys
+                .firstWhere((key) => countryModel[key] == address.country);
             print("${_countrySelectedCode}");
-          }finally {
+          } finally {
             _addressList.add(address);
             _isAddressLoading = false;
             _isAddingAddressLoader = false;
@@ -303,6 +302,7 @@ class ProfileProvider extends ChangeNotifier {
           }
         } else {
           _isAddressExists = false;
+          _isAddingAddressLoader = false;
         }
 
         print(

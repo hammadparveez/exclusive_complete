@@ -81,30 +81,33 @@ class ProfileRepo {
       print("Shipping Token $toke");
       final header = "Bearer $toke";
       print("\n\n ${header}\n\n");
-      print(
-          "ending URL S${AppConstants.UPDATE_SHIPPING_URI + "${countryCode.toLowerCase()}"}");
-      final response = await post(
-          AppConstants.UPDATE_SHIPPING_URI + "${countryCode.toLowerCase()}",
-          headers: {
-            //HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: header,
-          });
-      print("Status Code ${response.statusCode}");
-      print("Converted Data ${response.body}");
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (countryCode != null) {
+        final response = await post(
+            AppConstants.UPDATE_SHIPPING_URI + "${countryCode.toLowerCase()}",
+            headers: {
+              //HttpHeaders.contentTypeHeader: "application/json",
+              HttpHeaders.authorizationHeader: header,
+            });
+        print("Status Code ${response.statusCode}");
         print("Converted Data ${response.body}");
-        final data = await jsonDecode(response.body);
-        if (data != null) {
-          final c = ShippingUpdateModel.fromMap(data);
-          print("Welcomed Data ${c.items} and ${c.shippingAddress.firstName}");
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          print("Converted Data ${response.body}");
+          final data = await jsonDecode(response.body);
+          if (data != null) {
+            final c = ShippingUpdateModel.fromMap(data);
+            print(
+                "Welcomed Data ${c.items} and ${c.shippingAddress.firstName}");
 
-          return ShippingUpdateModel.fromMap(data);
+            return ShippingUpdateModel.fromMap(data);
+          }
+          return null;
         }
-        return null;
       }
     } catch (error) {
       print("Update Shipping Error $error");
+      return null;
     }
+    return null;
   }
 
   // for save home address
@@ -149,7 +152,7 @@ class ProfileRepo {
         headers: {HttpHeaders.authorizationHeader: bearer});
     print("PaymentGateways: ${response.body}");
     if (response.statusCode == 201 || response.statusCode == 200) {
-      final json =  jsonDecode(response.body);
+      final json = jsonDecode(response.body);
       print("Decode Payments $json");
       final jsonAsList = json as List;
       jsonAsList.forEach((element) {

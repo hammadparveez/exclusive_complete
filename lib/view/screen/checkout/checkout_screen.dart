@@ -110,7 +110,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             countryCode: profileProvider.countrySelectedCode);
         profileProvider.updateShipping(
             countryCode: profileProvider.countrySelectedCode);
-        print(" One");
       } else {
         print("User is not logged in");
         Provider.of<ProfileProvider>(context, listen: false).clearAddressList();
@@ -1016,7 +1015,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       }),
                     ],
                   )
-                : Center(child: SpinKitFoldingCube())));
+                : Center(
+                    child: SpinKitFoldingCube(
+                        color: ColorResources.WEB_PRIMARY_COLOR))));
   }
 
   Container buildAddressTopbar(BuildContext context) {

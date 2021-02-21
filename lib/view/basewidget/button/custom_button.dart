@@ -5,7 +5,8 @@ import 'package:sixvalley_ui_kit/utill/custom_themes.dart';
 class CustomButton extends StatelessWidget {
   final Function onTap;
   final String buttonText;
-  CustomButton({this.onTap, @required this.buttonText});
+  final Color color;
+  CustomButton({this.onTap, @required this.buttonText, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +25,8 @@ class CustomButton extends StatelessWidget {
                   offset: Offset(0, 1)), // changes position of shadow
             ],
             gradient: LinearGradient(colors: [
-              /* ColorResources.COLOR_PRIMARY,
-              ColorResources.COLOR_BLUE,
-              ColorResources.COLOR_BLUE,*/
-              ColorResources.PRIMARY_COLOR,
-              ColorResources.PRIMARY_COLOR,
+              color ?? ColorResources.PRIMARY_COLOR,
+              color ?? ColorResources.PRIMARY_COLOR,
             ]),
             borderRadius: BorderRadius.circular(10)),
         child: Text(buttonText,

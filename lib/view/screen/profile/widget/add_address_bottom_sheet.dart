@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
@@ -40,6 +41,14 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ProfileProvider>(context, listen: false);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     Map<String, dynamic> countryModels;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -49,10 +58,10 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
           Provider.of<ProfileProvider>(context, listen: false).countryModel;
     });
     return Container(
-
       decoration: BoxDecoration(
           borderRadius: BorderRadius.horizontal(
-              right: Radius.circular(10), left: Radius.circular(10)),
+              right: Radius.circular(Dimensions.PADDING_SIZE_LARGE),
+              left: Radius.circular(Dimensions.PADDING_SIZE_LARGE)),
           color: ColorResources.WHITE),
       padding: EdgeInsets.only(
           left: Dimensions.PADDING_SIZE_DEFAULT,
@@ -212,47 +221,48 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                   },
                 ),
                 Divider(thickness: 0.7, color: ColorResources.GREY),
-                Consumer<ProfileProvider>(builder: (_, profileProvider, child) {
-                  String selectedRegion;
-                  return DropdownButtonFormField(
-                    validator: (value) {
-                      print("Value $value");
-                      if (value.length > 3)
-                        return "Region must be selected";
-                      else if (value.length < 0)
-                        return "Country must be selected";
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: ColorResources.PRIMARY_COLOR_BIT_DARK)),
-                    ),
-                    items: profileProvider.countryModel != null
-                        ? profileProvider.countryModel.keys
-                            .map<DropdownMenuItem>((e) => DropdownMenuItem(
-                                  child: Text(
-                                      "${profileProvider.countryModel[e]}"),
-                                  value: e,
-                                ))
-                            .toList()
-                        : [],
-                    /*for (String key, dynamic value in profileProvider.countryModel)
-                        DropdownMenuItem(
-                          child: Text("${model.name}"),
-                          value: model.countryId,
-                        ),*/
-                    onChanged: (value) async {
-                      profileProvider.countrySelectedCode = value;
-                      await profileProvider.updateShipping(countryCode: value);
-                      //profileProvider.fetchRegionMethods(value);
-                    },
-                    isExpanded: true,
-                    autovalidate: true,
-                    value: profileProvider.countrySelectedCode,
-                    hint: Text("Select Your Region"),
-                  );
-                }),
+                Provider.of<ProfileProvider>(context).countryModel != null
+                    ? Consumer<ProfileProvider>(
+                        builder: (_, profileProvider, child) {
+                        String selectedRegion;
+                        return DropdownButtonFormField(
+                          validator: (value) {
+                            if (value != null) {
+                              print("Value $value");
+                              if (value.length > 3)
+                                return "Region must be selected";
+                              else if (value.length < 0)
+                                return "Country must be selected";
+                              return null;
+                            }
+                            return "Region must be selected";
+                          },
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color:
+                                        ColorResources.PRIMARY_COLOR_BIT_DARK)),
+                          ),
+                          items: profileProvider.countryModel.keys
+                              .map<DropdownMenuItem>((e) => DropdownMenuItem(
+                                    child: Text(
+                                        "${profileProvider.countryModel[e]}"),
+                                    value: e,
+                                  ))
+                              .toList(),
+                          onChanged: (value) async {
+                            profileProvider.countrySelectedCode = value;
+                            await profileProvider.updateShipping(
+                                countryCode: value);
+                            //profileProvider.fetchRegionMethods(value);
+                          },
+                          isExpanded: true,
+                          autovalidate: true,
+                          value: profileProvider.countrySelectedCode,
+                          hint: Text("Select Your Region"),
+                        );
+                      })
+                    : const SizedBox.shrink(),
                 Divider(thickness: 0.7, color: ColorResources.GREY),
                 CustomTextField(
                   hintText: Strings.ENTER_MOBILE_NUMBER,
@@ -279,9 +289,12 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                     return profileProvider.isLoading
                         ? CircularProgressIndicator(key: Key(''))
                         : CustomButton(
-                            buttonText: Strings.UPDATE_ADDRESS,
+                            buttonText: profileProvider.countryModel == null
+                                ? "Address cannot be updated"
+                                : Strings.UPDATE_ADDRESS,
                             onTap: () {
-                              _addAddress();
+                              if (profileProvider.countryModel != null)
+                                _addAddress();
                             },
                           );
                   },

@@ -104,22 +104,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final profileProvider =
+          Provider.of<ProfileProvider>(context, listen: false);
+      final customerProvider =
+          Provider.of<CustomerProvider>(context, listen: false);
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (authProvider.isInvalidAuth) {}
       Provider.of<CustomerProvider>(context, listen: false).initCustomerDetails(
           Provider.of<AuthProvider>(context, listen: false).getUserID());
-      Provider.of<ProfileProvider>(context, listen: false)
-          .initAddressTypeList();
-      Provider.of<ProfileProvider>(context, listen: false).getAddressOfUser();
+      /*Provider.of<ProfileProvider>(context, listen: false)
+          .initAddressTypeList();*/
+      //Provider.of<ProfileProvider>(context, listen: false).getAddressOfUser();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: Provider.of<ProfileProvider>(context).isAvailableProfile
-          ? Hero(
-              tag: 'profile-icon',
-              child: Consumer3<ProfileProvider, CustomerProvider, AuthProvider>(
+    return Hero(
+      tag: 'profile-icon',
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: Provider.of<ProfileProvider>(context).isAvailableProfile
+            ? Consumer3<ProfileProvider, CustomerProvider, AuthProvider>(
                 builder:
                     (context, profile, customerProvider, authProvider, child) {
                   String firstName = '', lastName = '';
@@ -208,21 +214,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               ),
                                       ),
                                       /*Positioned(
-                                        bottom: 0,
-                                        right: -10,
-                                        child: CircleAvatar(
-                                          backgroundColor:
-                                              ColorResources.LIGHT_SKY_BLUE,
-                                          radius: 14,
-                                          child: IconButton(
-                                            onPressed: _choose,
-                                            padding: EdgeInsets.all(0),
-                                            icon: Icon(Icons.edit,
-                                                color: ColorResources.WHITE,
-                                                size: 18),
-                                          ),
+                                      bottom: 0,
+                                      right: -10,
+                                      child: CircleAvatar(
+                                        backgroundColor:
+                                            ColorResources.LIGHT_SKY_BLUE,
+                                        radius: 14,
+                                        child: IconButton(
+                                          onPressed: _choose,
+                                          padding: EdgeInsets.all(0),
+                                          icon: Icon(Icons.edit,
+                                              color: ColorResources.WHITE,
+                                              size: 18),
                                         ),
-                                      ),*/
+                                      ),
+                                    ),*/
                                     ],
                                   ),
                                 ),
@@ -414,163 +420,132 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           Consumer<ProfileProvider>(
                                             builder: (context, profileProvider,
                                                     child) =>
-                                                Row(
-                                              children: [
-                                                /*  IconButton(
-                                                    padding: EdgeInsets.all(0),
-                                                    icon: Icon(Icons.home,
-                                                        color: profileProvider
-                                                                .isHomeAddress
-                                                            ? ColorResources
-                                                                .COLOR_PRIMARY
-                                                            : ColorResources
+                                                Material(
+                                              type: MaterialType.transparency,
+                                              child: InkWell(
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    context: context,
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    isScrollControlled: true,
+                                                    builder: (context) =>
+                                                        AddAddressBottomSheet(),
+                                                  );
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    Container(
+                                                      width: 25,
+                                                      height: 35,
+                                                      alignment:
+                                                          Alignment.center,
+                                                      decoration: BoxDecoration(
+                                                        color: ColorResources
+                                                            .WHITE,
+                                                        shape: BoxShape.circle,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.grey
+                                                                .withOpacity(
+                                                                    0.2),
+                                                            spreadRadius: 1,
+                                                            blurRadius: 7,
+                                                            offset: Offset(0,
+                                                                1), // changes position of shadow
+                                                          )
+                                                        ],
+                                                      ),
+                                                      child: IconButton(
+                                                        padding:
+                                                            EdgeInsets.all(0),
+                                                        icon: Icon(Icons.add,
+                                                            color: ColorResources
                                                                 .COLUMBIA_BLUE,
-                                                        size: 35),
-                                                    onPressed: () {
-                                                      //Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddAddressScreen(userInfoModel)));
-                                                      //profileProvider.updateAddressCondition(true);
-                                                      profileProvider
-                                                          .updateAddressCondition(
-                                                              true);
-                                                    }),*/
-                                                /* SizedBox(
-                                                    width: Dimensions
-                                                        .MARGIN_SIZE_LARGE),*/
-                                                /*  GestureDetector(
-                                                  onTap: () {
-                                                    profileProvider
-                                                        .updateAddressCondition(
-                                                            false);
-                                                  },
-                                                  child: Image.asset(
-                                                    Images.bag,
-                                                    width: 30,
-                                                    height: 30,
-                                                    color: !profileProvider
-                                                            .isHomeAddress
-                                                        ? ColorResources
-                                                            .COLOR_PRIMARY
-                                                        : ColorResources
-                                                            .COLUMBIA_BLUE,
-                                                  ),
-                                                ),*/
-                                                /* SizedBox(
-                                                    width: Dimensions
-                                                        .MARGIN_SIZE_LARGE),*/
-                                                Container(
-                                                  width: 25,
-                                                  height: 25,
-                                                  alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
-                                                    color: ColorResources.WHITE,
-                                                    shape: BoxShape.circle,
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.2),
-                                                        spreadRadius: 1,
-                                                        blurRadius: 7,
-                                                        offset: Offset(0,
-                                                            1), // changes position of shadow
-                                                      )
-                                                    ],
-                                                  ),
-                                                  child: IconButton(
-                                                    padding: EdgeInsets.all(0),
-                                                    onPressed: () {
-                                                      showModalBottomSheet(
-                                                        context: context,
-                                                        isScrollControlled:
-                                                            true,
-                                                        builder: (context) =>
-                                                            AddAddressBottomSheet(),
-                                                      );
-                                                    },
-                                                    icon: Icon(Icons.add,
-                                                        color: ColorResources
-                                                            .COLUMBIA_BLUE,
-                                                        size: 20),
-                                                  ),
+                                                            size: 20),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 10),
+                                                    Text("Update your address"),
+                                                    /*   SizedBox(
+                                                      width: Dimensions
+                                                          .MARGIN_SIZE_LARGE),*/
+                                                    /*   Container(
+                                                    width: 25,
+                                                    height: 25,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                      color: ColorResources.WHITE,
+                                                      shape: BoxShape.circle,
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.grey
+                                                              .withOpacity(0.2),
+                                                          spreadRadius: 1,
+                                                          blurRadius: 7,
+                                                          offset: Offset(0,
+                                                              1), // changes position of shadow
+                                                        )
+                                                      ],
+                                                    ),
+                                                    child: IconButton(
+                                                      padding: EdgeInsets.all(0),
+                                                      onPressed: () {
+                                                        Navigator.of(context).push(
+                                                            MaterialPageRoute(
+                                                                builder: (context) =>
+                                                                    AddressListScreen(
+                                                                        profile
+                                                                            .userInfoModel)));
+                                                      },
+                                                      icon: Icon(Icons.done_all,
+                                                          color: ColorResources
+                                                              .COLUMBIA_BLUE,
+                                                          size: 18),
+                                                    ),
+                                                  ),*/
+                                                  ],
                                                 ),
-                                                const SizedBox(width: 10),
-                                                Text("Update your address"),
-                                                /*   SizedBox(
-                                                    width: Dimensions
-                                                        .MARGIN_SIZE_LARGE),*/
-                                                /*   Container(
-                                                  width: 25,
-                                                  height: 25,
-                                                  alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
-                                                    color: ColorResources.WHITE,
-                                                    shape: BoxShape.circle,
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.2),
-                                                        spreadRadius: 1,
-                                                        blurRadius: 7,
-                                                        offset: Offset(0,
-                                                            1), // changes position of shadow
-                                                      )
-                                                    ],
-                                                  ),
-                                                  child: IconButton(
-                                                    padding: EdgeInsets.all(0),
-                                                    onPressed: () {
-                                                      Navigator.of(context).push(
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  AddressListScreen(
-                                                                      profile
-                                                                          .userInfoModel)));
-                                                    },
-                                                    icon: Icon(Icons.done_all,
-                                                        color: ColorResources
-                                                            .COLUMBIA_BLUE,
-                                                        size: 18),
-                                                  ),
-                                                ),*/
-                                              ],
+                                              ),
                                             ),
                                           ),
                                           SizedBox(
                                               height:
                                                   Dimensions.MARGIN_SIZE_SMALL),
                                           /*  Consumer<ProfileProvider>(
-                                            builder: (context, profileProvider,
-                                                    child) =>
-                                                Container(
-                                              width: double.infinity,
-                                              height: 45,
-                                              padding: const EdgeInsets.symmetric(
-                                                  vertical: 12.0, horizontal: 15),
-                                              decoration: BoxDecoration(
-                                                color: ColorResources.WHITE,
-                                                borderRadius:
-                                                    BorderRadius.circular(6),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.grey
-                                                        .withOpacity(0.2),
-                                                    spreadRadius: 1,
-                                                    blurRadius: 7,
-                                                    offset: Offset(0,
-                                                        1), // changes position of shadow
-                                                  )
-                                                ],
-                                              ),
-                                              child: Text(
-                                                  profileProvider.isHomeAddress
-                                                      ? profileProvider
-                                                          .getHomeAddress()
-                                                      : profileProvider
-                                                              .getOfficeAddress() ??
-                                                          Strings
-                                                              .ADDRESS_NOT_FOUND,
-                                                  textAlign: TextAlign.left),
+                                          builder: (context, profileProvider,
+                                                  child) =>
+                                              Container(
+                                            width: double.infinity,
+                                            height: 45,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12.0, horizontal: 15),
+                                            decoration: BoxDecoration(
+                                              color: ColorResources.WHITE,
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.2),
+                                                  spreadRadius: 1,
+                                                  blurRadius: 7,
+                                                  offset: Offset(0,
+                                                      1), // changes position of shadow
+                                                )
+                                              ],
                                             ),
-                                          ),*/
+                                            child: Text(
+                                                profileProvider.isHomeAddress
+                                                    ? profileProvider
+                                                        .getHomeAddress()
+                                                    : profileProvider
+                                                            .getOfficeAddress() ??
+                                                        Strings
+                                                            .ADDRESS_NOT_FOUND,
+                                                textAlign: TextAlign.left),
+                                          ),
+                                        ),*/
                                         ],
                                       ),
                                     ),
@@ -651,29 +626,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             /* Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: Dimensions.MARGIN_SIZE_LARGE,
-                                  vertical: Dimensions.MARGIN_SIZE_SMALL),
-                              child: !Provider.of<ProfileProvider>(context)
-                                      .isLoading
-                                  ? CustomButton(
-                                      onTap: _updateUserAccount,
-                                      buttonText: Strings.UPDATE_ACCOUNT)
-                                  : Center(child: CircularProgressIndicator()),
-                            ),*/
+                            margin: EdgeInsets.symmetric(
+                                horizontal: Dimensions.MARGIN_SIZE_LARGE,
+                                vertical: Dimensions.MARGIN_SIZE_SMALL),
+                            child: !Provider.of<ProfileProvider>(context)
+                                    .isLoading
+                                ? CustomButton(
+                                    onTap: _updateUserAccount,
+                                    buttonText: Strings.UPDATE_ACCOUNT)
+                                : Center(child: CircularProgressIndicator()),
+                          ),*/
                           ],
                         ),
                       ),
                     ],
                   );
                 },
-              ),
-            )
-          : Center(
-              child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(
-                  ColorResources.COLOR_PRIMARY),
-            )),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation<Color>(
+                    ColorResources.COLOR_PRIMARY),
+              )),
+      ),
     );
   }
 }
