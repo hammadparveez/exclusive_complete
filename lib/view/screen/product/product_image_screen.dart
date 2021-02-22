@@ -15,6 +15,7 @@ class ProductImageScreen extends StatefulWidget {
 }
 
 class _ProductImageScreenState extends State<ProductImageScreen> {
+  double zoom = 0.3;
   @override
   void initState() {
     super.initState();
@@ -22,61 +23,69 @@ class _ProductImageScreenState extends State<ProductImageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: Column(
-        children: [
-          CustomAppBar(title: "Back"),
-          Expanded(
-            child: Hero(
-              tag: 'image-view',
-              child: GestureDetector(
-                onTap: () {
-                  SystemChrome.setEnabledSystemUIOverlays([]);
-                  showDialog(
-                    context: context,
-                    builder: (_) => WillPopScope(
-                      onWillPop: () async {
-                        SystemChrome.setEnabledSystemUIOverlays(
-                            SystemUiOverlay.values);
-                        return true;
-                      },
-                      child: InteractiveViewer(
-                        maxScale: 4,
-                        minScale: 0.5,
-                        scaleEnabled: true,
-                        child: Container(
-                          // width: Get.width,
-                          //height: Get.height,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(widget.imgModel.src),
-                                fit: BoxFit.cover,
-                                onError: (e, error) {
-                                  showCustomSnackBar(
-                                      "Image not available", context);
-                                }),
+    return WillPopScope(
+      onWillPop: ()async {
+       /* setState(() {
+          zoom = 4;
+        });*/
+        return true;
+      },
+      child: Material(
+        type: MaterialType.transparency,
+        child: Column(
+          children: [
+            CustomAppBar(title: "Back"),
+            Expanded(
+              child: Hero(
+                tag: 'image-view',
+                child: GestureDetector(
+                  onTap: () {
+                    SystemChrome.setEnabledSystemUIOverlays([]);
+                    showDialog(
+                      context: context,
+                      builder: (_) => WillPopScope(
+                        onWillPop: () async {
+                          SystemChrome.setEnabledSystemUIOverlays(
+                              SystemUiOverlay.values);
+                          return true;
+                        },
+                        child: InteractiveViewer(
+                          maxScale: 4,
+                          minScale: zoom,
+                          scaleEnabled: true,
+                          child: Container(
+                            // width: Get.width,
+                            //height: Get.height,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: NetworkImage(widget.imgModel.src),
+                                  fit: BoxFit.cover,
+                                  onError: (e, error) {
+                                    showCustomSnackBar(
+                                        "Image not available", context);
+                                  }),
+                            ),
                           ),
                         ),
                       ),
+                    );
+                  },
+                  child: InteractiveViewer(
+                    scaleEnabled: true,
+                    minScale: 0.3,
+                    maxScale: 4,
+                    child: CachedNetworkImage(
+                      imageUrl: widget.imgModel.src,
+                      placeholder: (_, str) {
+                        return SpinKitFadingCircle(color: Colors.transparent);
+                      },
                     ),
-                  );
-                },
-                child: InteractiveViewer(
-                  scaleEnabled: true,
-                  minScale: 0.3,
-                  maxScale: 4,
-                  child: CachedNetworkImage(
-                    imageUrl: widget.imgModel.src,
-                    placeholder: (_, str) {
-                      return SpinKitFadingCircle(color: Colors.transparent);
-                    },
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

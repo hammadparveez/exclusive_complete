@@ -45,14 +45,13 @@ class CartProvider extends ChangeNotifier {
   Future<void> getCartData() async {
     try {
       _cartList.clear();
+      _totalItemsInCart = 0;
       print("Getting Cart List");
       _isSelectedList.clear();
       _isSelectAll = true;
 
       final c = await cartRepo.getCartList();
-      c.forEach((element) {
-        print("Cart Item Keys: ${element.itemKey}");
-      });
+      _totalItemsInCart = cartRepo.totalCarts;
       c.forEach((element) {
         _cartList.add(element);
         _isSelectedList.add(true);

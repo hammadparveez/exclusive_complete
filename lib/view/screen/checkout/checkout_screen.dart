@@ -290,9 +290,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 false,
                                                             context: context,
                                                             builder: (_) {
-                                                              return Center(
-                                                                  child:
-                                                                      CircularProgressIndicator());
+                                                              return WillPopScope(
+
+                                                                    onWillPop:
+                                                                        () async =>
+                                                                    false,
+                                                                child: Center(
+                                                                    child:
+                                                                        SpinKitFoldingCube(color: ColorResources.WEB_PRIMARY_COLOR)),
+                                                              );
                                                             });
                                                         final orderDone =
                                                             await Provider.of<

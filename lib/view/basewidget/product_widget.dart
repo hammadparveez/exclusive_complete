@@ -47,7 +47,11 @@ class ProductWidget extends StatelessWidget {
                   BoxShadow(
                       color: Colors.grey.withOpacity(0.3),
                       spreadRadius: 1,
-                      blurRadius: 5)
+                      blurRadius: 2),
+                  BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 1,
+                      blurRadius: 5),
                 ],
               ),
               child: Stack(children: [
@@ -187,29 +191,31 @@ class ProductWidget extends StatelessWidget {
 
                 // Off
                 wordPressProductModel != null
-                    ? Positioned(
+                    ?  wordPressProductModel.on_sale ?Positioned(
                         top: 0,
                         right: 0,
                         child: Container(
                           width: 60,
                           height: 20,
                           decoration: BoxDecoration(
-                            color: ColorResources.PRIMARY_COLOR,
+                            color: wordPressProductModel.on_sale ? ColorResources.WEB_PRIMARY_COLOR : ColorResources.PRIMARY_COLOR,
                             borderRadius: BorderRadius.only(
                                 topRight: Radius.circular(10),
                                 bottomLeft: Radius.circular(10)),
+                            boxShadow: [
+                              BoxShadow(color: ColorResources.PRIMARY_COLOR_LIGHT, blurRadius: 1, offset: Offset(0,1)),
+                              BoxShadow(color: ColorResources.PRIMARY_COLOR_LIGHT),
+                            ],
                           ),
                           child: Center(
                             child: Text(
-                              "${wordPressProductModel.on_sale ? 'SALE' : 'AVAILABLE'}",
-                              style: robotoRegular.copyWith(
-                                  color: ColorResources.WHITE,
-                                  fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL),
+                              "${wordPressProductModel.on_sale ? 'SALE' : ''}",
+                              style: titilliumSemiBold.copyWith(color: ColorResources.WHITE, fontSize: Dimensions.FONT_SIZE_SMALL),
                             ),
                           ),
                         ),
                       )
-                    : const SizedBox.shrink(),
+                    : const SizedBox.shrink() : const SizedBox.shrink(),
               ]),
             )
           : const SizedBox.shrink(),

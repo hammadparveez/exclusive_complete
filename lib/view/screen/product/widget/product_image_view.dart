@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,7 +29,7 @@ class ProductImageView extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         InkWell(
-          onDoubleTap: () {},
+
           onTap: () {
             if (wordPressProductModel != null) {
               Get.to(
@@ -47,83 +49,96 @@ class ProductImageView extends StatelessWidget {
                 BoxShadow(
                     color: Colors.grey[300], spreadRadius: 3, blurRadius: 10)
               ],
-              gradient: LinearGradient(
-                colors: [ColorResources.WHITE, ColorResources.IMAGE_BG],
+          /* image: DecorationImage(image: NetworkImage(wordPressProductModel.images[_index].src)),*/
+           /*   gradient: LinearGradient(
+                colors: [ColorResources.PRIMARY_COLOR_BIT_DARK, ColorResources.PRIMARY_COLOR_BIT_DARK],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-              ),
+              ),*/
             ),
             child: Stack(children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.width - 100,
-                child: PageView.builder(
-                  controller: _controller,
-                  itemCount:  wordPressProductModel != null
-                      ? wordPressProductModel.images.length
-                      : 1,
-                  itemBuilder: (context, index) {
-                    _index = index;
-                    if(wordPressProductModel != null) {
-                      return Padding(
-                        padding: EdgeInsets.fromLTRB(20, 20, 20, 50),
-                        child: Hero(
-                          tag: "image-view", //'image-${productModel.id}',
-                          child: LayoutBuilder(
-                            builder: (_, constraints) =>
-                                CachedNetworkImage(
-                                  height: Get.height,
-                                  width: Get.width,
-                                  fadeOutDuration: Duration.zero,
-                                  fadeInDuration: Duration.zero,
-                                  placeholderFadeInDuration: Duration.zero,
-                                  placeholder: (_, str) {
-                                    return Shimmer.fromColors(
-                                        baseColor: Colors.grey[300],
-                                        highlightColor: Colors.grey[100],
-                                        enabled: true,
-                                        child: Container(
-                                          height: constraints.maxHeight,
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius
-                                                  .circular(10),
-                                              color: ColorResources.WHITE),
-                                        ));
-                                  },
+              if(wordPressProductModel != null && wordPressProductModel.images != null)
+                Image.network(wordPressProductModel.images[_index].src, height: Get.width-100, width: Get.width, fit: BoxFit.cover)
+              else
+                const SizedBox(),
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.width - 100,
+                  child: PageView.builder(
+                    controller: _controller,
+                    itemCount:  wordPressProductModel != null
+                        ? wordPressProductModel.images.length
+                        : 1,
+                    itemBuilder: (context, index) {
+                      _index = index;
+                      if(wordPressProductModel != null) {
+                        return Padding(
+                          padding: EdgeInsets.fromLTRB(20, 20, 20, 50),
+                          child: Hero(
+                            tag: "image-view", //'image-${productModel.id}',
+                            child: LayoutBuilder(
+                              builder: (_, constraints) =>
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    child: CachedNetworkImage(
+                                      height: Get.height,
+                                      width: Get.width,
+                                      fadeOutDuration: Duration.zero,
+                                      fadeInDuration: Duration.zero,
+                                      placeholderFadeInDuration: Duration.zero,
+                                      placeholder: (_, str) {
+                                        return Shimmer.fromColors(
+                                            baseColor: Colors.grey[300].withOpacity(.3),
+                                            highlightColor: Colors.grey[100].withOpacity(.3),
+                                            enabled: true,
+                                            child: Container(
+                                              height: constraints.maxHeight,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius
+                                                      .circular(10),
+                                                  color: ColorResources.WHITE.withOpacity(.2)),
+                                            ));
+                                      },
 
-                                  errorWidget: (_, str, value) {
-                                    return Image.asset(
-                                        Images.no_image_available,
-                                        fit: BoxFit.fill);
-                                  },
-                                  imageUrl:
-                                  wordPressProductModel != null
-                                      ? wordPressProductModel.images[index]
-                                      .shop_catalog
-                                      : productModel.thumbnail_img,
+                                      errorWidget: (_, str, value) {
+                                        return Image.asset(
+                                            Images.no_image_available,
+                                            fit: BoxFit.fill);
+                                      },
+                                      imageUrl:
+                                      wordPressProductModel != null
+                                          ? wordPressProductModel.images[index]
+                                          .shop_catalog
+                                          : productModel.thumbnail_img,
 
-                                  //"${wordPressProductModel.images != null ? wordPressProductModel.images[index].thumbnail : 'https://www.exclusiveinn.com/wp-content/uploads/2018/04/SACL09-1-600x853.jpg'}}", //productModel.images[index],
-                                ),
+                                      //"${wordPressProductModel.images != null ? wordPressProductModel.images[index].thumbnail : 'https://www.exclusiveinn.com/wp-content/uploads/2018/04/SACL09-1-600x853.jpg'}}", //productModel.images[index],
+                                    ),
+                                  ),
+                            ),
                           ),
-                        ),
-                      );
-                    }else {
-                      return Shimmer.fromColors(
-                          baseColor: Colors.grey[300],
-                          highlightColor: Colors.grey[100],
-                          enabled: true,
-                          child: Container(
-                            height: Get.width-50,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius
-                                    .circular(10),
-                                color: ColorResources.WHITE),
-                          ));
-                    }
-                  },
-                  onPageChanged: (index) {
-                    Provider.of<ProductDetailsProvider>(context, listen: false)
-                        .setImageSliderSelectedIndex(index);
-                  },
+                        );
+                      }else {
+                        return Shimmer.fromColors(
+                            baseColor: Colors.grey[300],
+                            highlightColor: Colors.grey[100],
+                            enabled: true,
+                            child: Container(
+                              height: Get.width-50,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius
+                                      .circular(10),
+                                  color: ColorResources.WHITE),
+                            ));
+                      }
+                    },
+                    onPageChanged: (index) {
+                      Provider.of<ProductDetailsProvider>(context, listen: false)
+                          .setImageSliderSelectedIndex(index);
+                    },
+                  ),
                 ),
               ),
               wordPressProductModel != null

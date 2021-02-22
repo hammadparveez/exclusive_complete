@@ -98,7 +98,7 @@ class WordPressProductRepo {
         // key: "$slug$pageCount",
         url: PER_PAGE_PRODUCTS,
         callback: get);
-    print("Per page Prducts: ${products["products"].length}");
+    print("Per page Prducts: ${products["products"]}");
     return products["products"];
     //return [];
   }

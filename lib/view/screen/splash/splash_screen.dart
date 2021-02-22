@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen>
           .initConfig()
           .then((bool isSuccess) {
         if (isSuccess) {
-          Timer(Duration(milliseconds: 1500), () async {
+          Timer(Duration(milliseconds: 1700), () async {
             final sharedPerf = await SharedPreferences.getInstance();
             if (sharedPerf.getBool("onBoardSeen") != null) {
               Navigator.of(context).pushReplacement(

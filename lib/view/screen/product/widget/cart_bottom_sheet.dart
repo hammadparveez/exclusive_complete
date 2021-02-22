@@ -177,9 +177,16 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                 ),
                 child: Consumer<ProductDetailsProvider>(
                   builder: (context, details, child) {
-                    final totalPrice = int.parse(widget
-                            .wordPressProductModel.variations.first.price) *
-                        details.quantity;
+                    int totalPrice = 0;
+                    if(widget.wordPressProductModel.variations.isNotEmpty) {
+                       totalPrice = int.parse(widget
+                          .wordPressProductModel.variations.first.price) *
+                          details.quantity;
+                    }else {
+                      totalPrice =  int.parse(widget
+                          .wordPressProductModel.price) *
+                          details.quantity;
+                    }
                     /*double.parse(widget
                             .wordPressProductModel.variations.first.sale_price) **/
                     //details.quantity;
@@ -223,7 +230,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                               ),
                               child: CachedNetworkImage(
                                   imageUrl:
-                                      "${widget.wordPressProductModel.images.first.src}" //product.thumbnail,
+                                      "${widget.wordPressProductModel?.images.first.src}" //product.thumbnail,
                                   ),
                             ),
                             SizedBox(width: 20),
@@ -238,23 +245,38 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                         style: titilliumRegular),
                                     Column(
                                       children: [
-                                        Text(
-                                          "${widget.wordPressProductModel.prefix} ${widget.wordPressProductModel.variations.first.price} ",
-                                          style: titilliumBold.copyWith(
-                                              color:
-                                                  ColorResources.COLOR_PRIMARY,
-                                              fontSize: 16),
-                                        ),
-                                        const SizedBox(width: 5),
-                                        widget.wordPressProductModel.variations
-                                                .first.on_sale
-                                            ? Text(
-                                                "${widget.wordPressProductModel.prefix} ${widget.wordPressProductModel.variations.first.regular_price} ",
+                                        if(widget.wordPressProductModel.variations.isEmpty)
+                                          Row(children: [
+                                            Text("${widget.wordPressProductModel.prefix} ${widget.wordPressProductModel.price}", style: titilliumSemiBold),
+                                            const SizedBox(width:5),
+                                            if(widget.wordPressProductModel.on_sale && widget.wordPressProductModel.regular_price != null && widget.wordPressProductModel.regular_price.isNotEmpty)
+                                              Text("${widget.wordPressProductModel.prefix} ${widget.wordPressProductModel.regular_price}",style: const TextStyle(decoration: TextDecoration.lineThrough),),
+
+                                          ],)
+                                        else
+                                          Row(
+                                            children: [
+                                              Text(
+                                                  widget.wordPressProductModel.prefix != null &&
+                                                      widget.wordPressProductModel
+                                                          .variations.isNotEmpty
+                                                      ? "${widget.wordPressProductModel.prefix} ${widget.wordPressProductModel.variations.first.price}"
+                                                      : "",
+                                                  style: titilliumSemiBold),
+                                              widget.wordPressProductModel.prefix != null &&
+                                                  widget.wordPressProductModel.variations.isNotEmpty
+                                                  ? widget.wordPressProductModel.variations.first.on_sale
+                                                  ? Text(
+                                                " ${widget.wordPressProductModel.prefix} ${widget.wordPressProductModel.variations.first.regular_price}",
                                                 style: TextStyle(
-                                                    decoration: TextDecoration
-                                                        .lineThrough),
+                                                    decoration:
+                                                    TextDecoration.lineThrough,
+                                                    color: Colors.black87),
                                               )
-                                            : const SizedBox.shrink(),
+                                                  : SizedBox()
+                                                  : SizedBox(),
+                                            ],
+                                          ),
                                       ],
                                     ),
                                     Align(
@@ -480,7 +502,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                             },
                           ),
                           SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-
+                if(widget.wordPressProductModel.variations.isNotEmpty)
                           Column(
                             children: dropDownBtn(),
                           ),
@@ -573,63 +595,32 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                           ? Strings.buy_now
                                           : Strings.add_to_cart,
                                       onTap: () async {
+                                        List<Map<String, dynamic>> listOfSelectedAllItems = <Map<String, dynamic>>[];
                                         print("$selectValue");
                                         final selectedItems =
                                             areItemsSelected.where((element) {
                                           return element == true;
                                         }).toList();
-                                        print(
-                                            "Items Length are  ${selectedItems}");
-                                        if (selectedItems.length ==
-                                            widget.wordPressProductModel
-                                                .attributes.length) {
-                                          final listOfSelectedAllItems =
-                                              <Map<String, dynamic>>[];
-                                          for (int j = 0;
-                                              j < selectedItem.length;
-                                              j++) {
-                                            listOfSelectedAllItems.add({
-                                              "attribute": widget
-                                                  .wordPressProductModel
-                                                  .attributes[j]
-                                                  .name,
-                                              "value": selectedItem[j]
-                                            });
-                                            print(
-                                                "I is $listOfSelectedAllItems");
-                                          }
-                                          print(
-                                              "ITems llength are truely ${selectedItem}");
-                                          final _cartModel = CartModel(
-                                            id: widget.wordPressProductModel.id,
-                                            image: widget.wordPressProductModel
-                                                .images.first.src,
-                                            name: widget
-                                                .wordPressProductModel.name,
-                                            seller: "Exclusive Inn",
-                                            price: totalPrice.toDouble(),
-                                            quantity: details.quantity,
-                                            variation: selectValue,
-                                            itemVariations:
-                                                listOfSelectedAllItems,
-                                            listOfVariation: selectedItem,
-                                            priceSymbol: widget
-                                                .wordPressProductModel.prefix,
-                                            on_sale: widget
-                                                .wordPressProductModel.on_sale,
-                                            in_stock: widget
-                                                .wordPressProductModel.in_stock,
-                                            wordpressVariations: widget
-                                                .wordPressProductModel
-                                                .variations,
-                                            taxable: widget
-                                                .wordPressProductModel.taxable,
-                                            total_sales: widget
-                                                .wordPressProductModel
-                                                .total_sales,
-                                          );
+                                        if(selectedItem != null) {
+                                          if (selectedItems.length ==
+                                              widget.wordPressProductModel
+                                                  .attributes.length) {
+                                            listOfSelectedAllItems =
+                                            <Map<String, dynamic>>[];
+                                            for (int j = 0;
+                                            j < selectedItem.length;
+                                            j++) {
+                                              listOfSelectedAllItems.add({
+                                                "attribute": widget
+                                                    .wordPressProductModel
+                                                    .attributes[j]
+                                                    .name,
+                                                "value": selectedItem[j]
+                                              });
+                                            }}
 
-                                          if (widget.isBuy) {
+                                        print(listOfSelectedAllItems);
+                           /*               if (widget.isBuy) {
                                             Navigator.pop(context);
                                             Navigator.push(
                                                 context,
@@ -641,78 +632,100 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                                             ],
                                                             fromProductDetails:
                                                                 true)));
+                                          }*/
+                                        }
+                                        final _cartModel = CartModel(
+                                          id: widget.wordPressProductModel.id,
+                                          image: widget.wordPressProductModel
+                                              .images.first.src,
+                                          name: widget
+                                              .wordPressProductModel.name,
+                                          seller: "Exclusive Inn",
+                                          price: totalPrice.toDouble(),
+                                          quantity: details.quantity,
+                                          variation: selectValue,
+                                          itemVariations:
+                                          listOfSelectedAllItems,
+                                          listOfVariation: selectedItem,
+                                          priceSymbol: widget
+                                              .wordPressProductModel.prefix,
+                                          on_sale: widget
+                                              .wordPressProductModel.on_sale,
+                                          in_stock: widget
+                                              .wordPressProductModel.in_stock,
+                                          wordpressVariations: widget
+                                              .wordPressProductModel
+                                              .variations,
+                                          taxable: widget
+                                              .wordPressProductModel.taxable,
+                                          total_sales: widget
+                                              .wordPressProductModel
+                                              .total_sales,
+                                        );
+                                        if (_formKey.currentState
+                                            .validate()) {
+                                          print("Cart is Empty ");
+                                          showDialog(
+                                              barrierDismissible: false,
+                                              context: context,
+                                              builder: (_) {
+                                                return WillPopScope(
+                                                  onWillPop: () async =>
+                                                  false,
+                                                  child: AlertDialog(
+                                                    content: Column(
+                                                      mainAxisSize:
+                                                      MainAxisSize.min,
+                                                      children: [
+                                                        CircularProgressIndicator(),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        Text(
+                                                            "Please wait..Adding to the cart")
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              });
+                                          await Provider.of<CartProvider>(
+                                              context,
+                                              listen: false)
+                                              .addToCart(_cartModel);
+                                          Navigator.pop(context);
+                                          if (!Provider.of<CartProvider>(
+                                              context,
+                                              listen: false)
+                                              .isCartAdded) {
+                                            showDialog(
+                                                barrierDismissible: false,
+                                                context: context,
+                                                builder: (_) {
+                                                  return WillPopScope(
+                                                    onWillPop: () async =>
+                                                    false,
+                                                    child: AlertDialog(
+                                                      content: Text(
+                                                          "We're sorry, Unable to add this item to the cart",
+                                                          style: titilliumRegular
+                                                              .copyWith(
+                                                              fontSize:
+                                                              Get.textScaleFactor *
+                                                                  14)),
+                                                      actions: [
+                                                        FlatButton(
+                                                          child:
+                                                          Text("Close"),
+                                                          onPressed: () =>
+                                                              Get.back(),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  );
+                                                });
                                           } else {
-                                            print(
-                                                "Cart is Empty ${selectValue}");
-                                            final x = _formKey.currentState
-                                                .validate();
-
-                                            if (_formKey.currentState
-                                                .validate()) {
-                                              print("Cart is Empty ");
-                                              showDialog(
-                                                  barrierDismissible: false,
-                                                  context: context,
-                                                  builder: (_) {
-                                                    return WillPopScope(
-                                                      onWillPop: () async =>
-                                                          false,
-                                                      child: AlertDialog(
-                                                        content: Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            CircularProgressIndicator(),
-                                                            const SizedBox(
-                                                                height: 8),
-                                                            Text(
-                                                                "Please wait..Adding to the cart")
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    );
-                                                  });
-                                              await Provider.of<CartProvider>(
-                                                      context,
-                                                      listen: false)
-                                                  .addToCart(_cartModel);
-                                              Navigator.pop(context);
-                                              if (!Provider.of<CartProvider>(
-                                                      context,
-                                                      listen: false)
-                                                  .isCartAdded) {
-                                                showDialog(
-                                                    barrierDismissible: false,
-                                                    context: context,
-                                                    builder: (_) {
-                                                      return WillPopScope(
-                                                        onWillPop: () async =>
-                                                            false,
-                                                        child: AlertDialog(
-                                                          content: Text(
-                                                              "We're sorry, Unable to add this item to the cart",
-                                                              style: titilliumRegular
-                                                                  .copyWith(
-                                                                      fontSize:
-                                                                          Get.textScaleFactor *
-                                                                              14)),
-                                                          actions: [
-                                                            FlatButton(
-                                                              child:
-                                                                  Text("Close"),
-                                                              onPressed: () =>
-                                                                  Get.back(),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      );
-                                                    });
-                                              } else {
-                                                Navigator.pop(context);
-                                              }
-                                              widget.callback();
-                                            }
+                                            Navigator.pop(context);
                                           }
+                                          widget.callback();
                                         }
                                       }),
                                 )

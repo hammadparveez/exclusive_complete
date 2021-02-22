@@ -25,6 +25,11 @@ class BottomCartView extends StatefulWidget {
 class _BottomCartViewState extends State<BottomCartView> {
   int count = 0;
   @override
+  void initState() {
+    super.initState();
+
+  }
+  @override
   Widget build(BuildContext context) {
     print(
         "Total Carts are Product ${widget.wordPressProductModel.name}  ${Provider.of<CartProvider>(context).totalItemsInCart.toString()}");

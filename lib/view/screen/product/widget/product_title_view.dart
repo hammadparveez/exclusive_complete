@@ -21,11 +21,7 @@ class ProductTitleView extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 7),
       child: Consumer<ProductDetailsProvider>(
         builder: (context, details, child) {
-          /* final stockQty = wordPressProductModel.variations.isNotEmpty
-              ? wordPressProductModel.variations[0].stock_quantity != null
-                  ? wordPressProductModel.variations[0].stock_quantity
-                  : 0
-              : 0;*/
+
           return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -37,25 +33,39 @@ class ProductTitleView extends StatelessWidget {
                       child: Row(
                         children: [
                           //: const SizedBox(width: 7),
-                          Text(
+                          if(wordPressProductModel.variations.isEmpty)
+                          Row(children: [
+                            Text("${wordPressProductModel.prefix} ${wordPressProductModel.price}", style: titilliumSemiBold),
+                            const SizedBox(width:5),
+                            if(wordPressProductModel.on_sale && wordPressProductModel.regular_price != null && wordPressProductModel.regular_price.isNotEmpty)
+                            Text("${wordPressProductModel.prefix} ${wordPressProductModel.regular_price}",style: const TextStyle(decoration: TextDecoration.lineThrough),),
+
+                          ],)
+                          else
+                          Row(
+                            children: [
+                              Text(
+                                  wordPressProductModel.prefix != null &&
+                                          wordPressProductModel
+                                              .variations.isNotEmpty
+                                      ? "${wordPressProductModel.prefix} ${wordPressProductModel.variations.first.price}"
+                                      : "",
+                                  style: titilliumSemiBold),
                               wordPressProductModel.prefix != null &&
-                                      wordPressProductModel
-                                          .variations.isNotEmpty
-                                  ? "${wordPressProductModel.prefix} ${wordPressProductModel.variations.first.price}"
-                                  : "",
-                              style: titilliumSemiBold),
-                          wordPressProductModel.prefix != null &&
                                   wordPressProductModel.variations.isNotEmpty
-                              ? wordPressProductModel.variations.first.on_sale
+                                  ? wordPressProductModel.variations.first.on_sale
                                   ? Text(
-                                      " ${wordPressProductModel.prefix} ${wordPressProductModel.variations.first.regular_price}",
-                                      style: TextStyle(
-                                          decoration:
-                                              TextDecoration.lineThrough,
-                                          color: Colors.black87),
-                                    )
+                                " ${wordPressProductModel.prefix} ${wordPressProductModel.variations.first.regular_price}",
+                                style: TextStyle(
+                                    decoration:
+                                    TextDecoration.lineThrough,
+                                    color: Colors.black87),
+                              )
                                   : SizedBox()
-                              : SizedBox(),
+                                  : SizedBox(),
+                            ],
+                          ),
+
                         ],
                       ),
                     ),

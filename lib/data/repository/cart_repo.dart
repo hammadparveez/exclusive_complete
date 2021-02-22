@@ -20,14 +20,14 @@ class CartRepo {
         "https://www.exclusiveinn.com/wp-json/wc/store/cart/",
         headers: {HttpHeaders.authorizationHeader: bearer});
     if (response.statusCode == 200 || response.statusCode == 201) {
-      final jsonData = await jsonDecode(response.body);
+      final jsonData =jsonDecode(response.body);
       print("Json Body :${response.body}");
       final shippingModel = ShippingUpdateModel.fromMap(jsonData);
       return shippingModel.itemsCount;
     }
     return 0;
   }
-
+  int totalCarts = 0;
   Future<List<CartModel>> getCartList() async {
     try {
       List<CartModel> cartList = [];
@@ -41,6 +41,7 @@ class CartRepo {
       print("Json Body :${response.body}");
       final shippingModel = ShippingUpdateModel.fromMap(jsonData);
       print("Json Body2 :${shippingModel.itemsCount}");
+      totalCarts = shippingModel.itemsCount;
       //print("Shipping Model is ${shippingModel.items.first.name}");
       for (ShippingUpdateModelItem item in shippingModel.items) {
         final itemsOfVariations = <Map<String, dynamic>>[];

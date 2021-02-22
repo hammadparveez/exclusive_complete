@@ -19,6 +19,7 @@ import 'package:sixvalley_ui_kit/view/screen/more/more_screen.dart';
 import 'package:sixvalley_ui_kit/view/screen/order/order_screen.dart';
 import 'package:sixvalley_ui_kit/view/screen/profile/profile_screen.dart';
 
+
 class DashBoardScreen extends StatefulWidget {
   @override
   _DashBoardScreenState createState() => _DashBoardScreenState();
@@ -31,28 +32,29 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      showDialog(
-          context: context,
-          builder: (_) {
-            return Material(
-              type: MaterialType.transparency,
-              child: Center(
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  SpinKitCubeGrid(
-                      color: ColorResources.WEB_PRIMARY_COLOR, size: 100),
-                  SizedBox(height: 10),
-                  Text("Please wait a sec...",
-                      style: titilliumSemiBold.copyWith(
-                          color: ColorResources.WHITE)),
-                ]),
-              ),
-            );
-          });
+
       if (Provider.of<AuthProvider>(context, listen: false).isInvalidAuth) {
+        showDialog(
+            context: context,
+            builder: (_) {
+              return Material(
+                type: MaterialType.transparency,
+                child: Center(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    SpinKitCubeGrid(
+                        color: ColorResources.WEB_PRIMARY_COLOR, size: 100),
+                    SizedBox(height: 10),
+                    Text("Please wait a sec...",
+                        style: titilliumSemiBold.copyWith(
+                            color: ColorResources.WHITE)),
+                  ]),
+                ),
+              );
+            });
         Provider.of<ProfileProvider>(context, listen: false).getAddressOfUser();
         await Provider.of<CartProvider>(context, listen: false).getCartData();
+        Get.back();
       }
-      Get.back();
     });
   }
 

@@ -303,11 +303,7 @@ class _OrderScreenState extends State<OrderScreen> {
         ),
          /*             : Expanded(
                           child: Center(child: CircularProgressIndicator())),*/
-              orderProvider.isLoadingOnScroll
-                  ? SizedBox(
-                      height: 50,
-                      child: Center(child: CircularProgressIndicator()))
-                  : const SizedBox.shrink(),
+              CustomScrollLoader(isLoading: orderProvider.isLoadingOnScroll),
             ],
           ),
         ),

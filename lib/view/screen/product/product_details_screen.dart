@@ -90,6 +90,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     return Consumer3<ProductDetailsProvider, WordPressProductProvider,
         CartProvider>(
       builder: (context, details, wordPressProvider, cartProvider, child) {
+
         return
             //wordPressProvider.wordPressProductModelByID != null
             WillPopScope(
@@ -198,5 +199,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                   ));*/
       },
     );
+  }
+  @override
+  dispose() {
+      super.dispose();
   }
 }

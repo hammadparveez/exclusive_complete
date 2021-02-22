@@ -171,203 +171,176 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         backgroundColor: Colors.grey[50],
         //resizeToAvoidBottomPadding: false,
 
-        //drawer: Transform.translate(offset: _animation.value, child: _CustomDrawer()),
+        drawer: _CustomDrawer(),
 
         body: AnimatedBuilder(
             animation: _animationController,
             builder: (_, child) {
-              final scale = 1 - (_animationController.value * 1);
-              return Stack(
-                children: [
-                  Scaffold(
-                      body: _CustomDrawer(
-                    isDismissed: isDismissed,
-                    onPress: () {
-                      _animationController.reverse();
-                      isDismissed = !isDismissed;
-                    },
-                  )),
-                  Transform(
-                    alignment: Alignment.centerRight,
-                    transform: Matrix4.identity()
-                      ..scale(
-                        scale,
-                      ),
-                    child: Scaffold(
-                      body: SafeArea(
-                        child: CustomScrollView(
-                          physics: AlwaysScrollableScrollPhysics(),
-                          controller: _scrollController,
-                          //physics: Bouncin  gScrollPhysics(),
-                          slivers: [
-                            // App Bar
-                            SliverAppBar(
-                              leading: IconButton(
-                                  icon: Icon(Icons.notes),
-                                  color: Colors.black,
-                                  onPressed: () {
-                                    setState(() {
-                                      isDismissed
-                                          ? _animationController.reverse()
-                                          : _animationController.forward();
-                                    });
-                                    isDismissed = !isDismissed;
-                                  }
-                                  //  _drawerKey.currentState.openDrawer(); }
+              return Scaffold(
+                body: SafeArea(
+                  child: CustomScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    //physics: Bouncin  gScrollPhysics(),
+                    slivers: [
+                      // App Bar
+                      SliverAppBar(
+                        leading: IconButton(
+                            icon: Icon(Icons.notes),
+                            color: Colors.black,
+                            onPressed: () {
+                          _drawerKey.currentState.openDrawer(); }
+                            ),
+                        floating: true,
+                        elevation: 0,
+                        centerTitle: true,
+                        automaticallyImplyLeading: false,
+                        backgroundColor: ColorResources.WHITE,
+                        title: Image.asset(Images.company_logo_big,
+                            height: 45),
+                        actions: [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => CartScreen()));
+                            },
+                            icon: Stack(
+                                overflow: Overflow.visible,
+                                children: [
+                                  Image.asset(
+                                    Images.cart_arrow_down_image,
+                                    height: Dimensions.ICON_SIZE_DEFAULT,
+                                    width: Dimensions.ICON_SIZE_DEFAULT,
+                                    color: ColorResources.PRIMARY_COLOR,
                                   ),
-                              floating: true,
-                              elevation: 0,
-                              centerTitle: true,
-                              automaticallyImplyLeading: false,
-                              backgroundColor: ColorResources.WHITE,
-                              title: Image.asset(Images.company_logo_big,
-                                  height: 45),
-                              actions: [
-                                IconButton(
-                                  onPressed: () {
+                                  Consumer<CartProvider>(
+                                    builder: (_, cartsProvider, child) =>
+                                        Positioned(
+                                      top: -4,
+                                      right: -4,
+                                      child: CircleAvatar(
+                                        radius: 7,
+                                        backgroundColor:
+                                            ColorResources.RED,
+                                        child: Text(
+                                            cartsProvider.totalItemsInCart
+                                                .toString(),
+                                            style: titilliumSemiBold
+                                                .copyWith(
+                                              color: ColorResources.WHITE,
+                                              fontSize: Dimensions
+                                                  .FONT_SIZE_EXTRA_SMALL,
+                                            )),
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+                          )
+                        ],
+                      ),
+
+                      // Search Button
+                      SliverPersistentHeader(
+                          pinned: true,
+                          delegate: SliverDelegate(
+                              child: InkWell(
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => SearchScreen())),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      Dimensions.PADDING_SIZE_SMALL,
+                                  vertical: 2),
+                              color: ColorResources.WHITE,
+                              alignment: Alignment.center,
+                              child: Container(
+                                padding: EdgeInsets.all(
+                                    Dimensions.PADDING_SIZE_SMALL),
+                                height: 50,
+                                alignment: Alignment.centerLeft,
+                                decoration: BoxDecoration(
+                                  color: ColorResources.GREY,
+                                  borderRadius: BorderRadius.circular(
+                                      Dimensions.PADDING_SIZE_SMALL),
+                                ),
+                                child: Row(children: [
+                                  Icon(Icons.search,
+                                      color: ColorResources.PRIMARY_COLOR,
+                                      size: Dimensions.ICON_SIZE_LARGE),
+                                  SizedBox(width: 5),
+                                  Text(Strings.SEARCH_HINT,
+                                      style: robotoRegular.copyWith(
+                                          color: ColorResources
+                                              .HINT_TEXT_COLOR)),
+                                ]),
+                              ),
+                            ),
+                          ))),
+
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: Dimensions.PADDING_SIZE_LARGE),
+                              child: BannersView(),
+                            ),
+
+                            // Category
+
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  Dimensions.PADDING_SIZE_SMALL,
+                                  20,
+                                  Dimensions.PADDING_SIZE_SMALL,
+                                  Dimensions.PADDING_SIZE_SMALL),
+                              child: TitleRow(
+                                  title: Strings.CATEGORY,
+                                  onTap: () {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (_) => CartScreen()));
-                                  },
-                                  icon: Stack(
-                                      overflow: Overflow.visible,
-                                      children: [
-                                        Image.asset(
-                                          Images.cart_arrow_down_image,
-                                          height: Dimensions.ICON_SIZE_DEFAULT,
-                                          width: Dimensions.ICON_SIZE_DEFAULT,
-                                          color: ColorResources.PRIMARY_COLOR,
-                                        ),
-                                        Consumer<CartProvider>(
-                                          builder: (_, cartsProvider, child) =>
-                                              Positioned(
-                                            top: -4,
-                                            right: -4,
-                                            child: CircleAvatar(
-                                              radius: 7,
-                                              backgroundColor:
-                                                  ColorResources.RED,
-                                              child: Text(
-                                                  cartsProvider.totalItemsInCart
-                                                      .toString(),
-                                                  style: titilliumSemiBold
-                                                      .copyWith(
-                                                    color: ColorResources.WHITE,
-                                                    fontSize: Dimensions
-                                                        .FONT_SIZE_EXTRA_SMALL,
-                                                  )),
-                                            ),
-                                          ),
-                                        ),
-                                      ]),
-                                )
-                              ],
+                                            builder: (_) =>
+                                                AllCategoryScreen()));
+                                  }),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      Dimensions.PADDING_SIZE_SMALL),
+                              child: CategoryView(
+                                isHomePage: true,
+                              ),
                             ),
 
-                            // Search Button
-                            SliverPersistentHeader(
-                                pinned: true,
-                                delegate: SliverDelegate(
-                                    child: InkWell(
-                                  onTap: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => SearchScreen())),
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            Dimensions.PADDING_SIZE_SMALL,
-                                        vertical: 2),
-                                    color: ColorResources.WHITE,
-                                    alignment: Alignment.center,
-                                    child: Container(
-                                      padding: EdgeInsets.all(
-                                          Dimensions.PADDING_SIZE_SMALL),
-                                      height: 50,
-                                      alignment: Alignment.centerLeft,
-                                      decoration: BoxDecoration(
-                                        color: ColorResources.GREY,
-                                        borderRadius: BorderRadius.circular(
-                                            Dimensions.PADDING_SIZE_SMALL),
-                                      ),
-                                      child: Row(children: [
-                                        Icon(Icons.search,
-                                            color: ColorResources.PRIMARY_COLOR,
-                                            size: Dimensions.ICON_SIZE_LARGE),
-                                        SizedBox(width: 5),
-                                        Text(Strings.SEARCH_HINT,
-                                            style: robotoRegular.copyWith(
-                                                color: ColorResources
-                                                    .HINT_TEXT_COLOR)),
-                                      ]),
-                                    ),
-                                  ),
-                                ))),
-
-                            SliverToBoxAdapter(
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        top: Dimensions.PADDING_SIZE_LARGE),
-                                    child: BannersView(),
-                                  ),
-
-                                  // Category
-
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                        Dimensions.PADDING_SIZE_SMALL,
-                                        20,
-                                        Dimensions.PADDING_SIZE_SMALL,
-                                        Dimensions.PADDING_SIZE_SMALL),
-                                    child: TitleRow(
-                                        title: Strings.CATEGORY,
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      AllCategoryScreen()));
-                                        }),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            Dimensions.PADDING_SIZE_SMALL),
-                                    child: CategoryView(
-                                      isHomePage: true,
-                                    ),
-                                  ),
-
-                                  // Top Products
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                        Dimensions.PADDING_SIZE_SMALL,
-                                        20,
-                                        Dimensions.PADDING_SIZE_SMALL,
-                                        Dimensions.PADDING_SIZE_SMALL),
-                                    child: TitleRow(
-                                        title: Strings.latest_products),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            Dimensions.PADDING_SIZE_SMALL),
-                                    child: ProductView(
-                                        productType: ProductType.LATEST_PRODUCT,
-                                        scrollController: _scrollController),
-                                  ),
-                                ],
-                              ),
-                            )
+                            // Top Products
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  Dimensions.PADDING_SIZE_SMALL,
+                                  20,
+                                  Dimensions.PADDING_SIZE_SMALL,
+                                  Dimensions.PADDING_SIZE_SMALL),
+                              child: TitleRow(
+                                  title: Strings.latest_products),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      Dimensions.PADDING_SIZE_SMALL),
+                              child: ProductView(
+                                  productType: ProductType.LATEST_PRODUCT,
+                                  scrollController: _scrollController),
+                            ),
                           ],
                         ),
-                      ),
-                    ),
+                      )
+                    ],
                   ),
-                ],
+                ),
               );
             }),
       ),
@@ -417,7 +390,7 @@ class _CustomDrawer extends StatelessWidget {
         builder: (_, authProvider, profileProvider, child) {
       print(authProvider.getUserDisplayName());
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * .75,
         color: ColorResources.WHITE,
         child: Stack(
           fit: StackFit.expand,
@@ -605,20 +578,7 @@ class _CustomDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            Positioned(
-                top: (Get.height / 100) * 84,
-                right: (Get.width / 100) * 3,
-                child: Material(
-                  type: MaterialType.transparency,
-                  shape: CircleBorder(),
-                  child: RaisedButton(
-                    shape: CircleBorder(),
-                    color: ColorResources.PRIMARY_COLOR_BIT_DARK,
-                    onPressed: onPress,
-                    padding: EdgeInsets.all(Dimensions.MARGIN_SIZE_DEFAULT),
-                    child: Icon(Icons.close, color: ColorResources.WHITE),
-                  ),
-                )),
+
           ],
         ),
       );

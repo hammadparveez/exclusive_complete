@@ -123,14 +123,14 @@ class WordPressProductProvider extends ChangeNotifier {
     print("Number of Page Counts are $pageCount");
     final listOfCategorizedProducts = await wordPressProductRepo
         .initBrandAndCategoryProducts(pageCount, slug);
-    print("List Of Categoriez Products ${listOfCategorizedProducts.length}");
+    print("List Of Categoriez Products ${listOfCategorizedProducts}");
 
     /*  listOfCategorizedProducts.forEach((element) {
       if (element["variations"].length > 0 && element["in_stock"])
         listOfCategoryProducts.add(WordPressProductModel.fromJson(element));
     });*/
     listOfCategorizedProducts.where((element) {
-      if (element["variations"].length > 0 && element["in_stock"])
+      if (/*element["variations"].length > 0 &&*/ element["in_stock"])
         listOfCategoryProducts.add(WordPressProductModel.fromJson(element));
       return (element["variations"].length > 0 && element["in_stock"]);
     }).toList();
@@ -197,7 +197,7 @@ class WordPressProductProvider extends ChangeNotifier {
       final List<WordPressProductModel> featuredProducts = [];
       products.forEach((product) {
         featuredProducts.add(product);
-  */ /*      wpPros.forEach((element) {
+  */ /*      wpPros.forEach((elpement) {
           if (product["id"] == element.id) {
             print("Adding PRoducts");
             featuredProducts.add(element);
